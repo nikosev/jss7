@@ -67,7 +67,6 @@ import org.mobicents.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.mobicents.protocols.ss7.tcap.asn.comp.Invoke;
 import org.mobicents.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.mobicents.protocols.ss7.tcap.asn.comp.Parameter;
-import org.mobicents.protocols.ss7.tcap.asn.comp.ReturnResult;
 import org.mobicents.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 
 import java.util.ArrayList;
@@ -207,54 +206,22 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
             ArrayList<SSCode> ssList2, ExtBasicServiceCode basicService2, AllowedServices allowedServices,
             UnavailabilityCause unavailabilityCause, boolean releaseResourcesSupported, ExternalSignalInfo gsmBearerCapability)
             throws MAPException {
-        doAddSendRoutingInformationResponse(false, invokeId, imsi, extRoutingInfo, cugCheckInfo, cugSubscriptionFlag,
-                subscriberInfo, ssList, basicService, forwardingInterrogationRequired, vmscAddress, extensionContainer,
-                naeaPreferredCI, ccbsIndicators, msisdn, nrPortabilityStatus, istAlertTimer, supportedCamelPhases,
-                offeredCamel4CSIs, routingInfo2, ssList2, basicService2, allowedServices, unavailabilityCause,
-                releaseResourcesSupported, gsmBearerCapability);
-    }
-
-    @Override
-    public void addSendRoutingInformationResponse_NonLast(long invokeId, IMSI imsi, ExtendedRoutingInfo extRoutingInfo,
-            CUGCheckInfo cugCheckInfo, boolean cugSubscriptionFlag, SubscriberInfo subscriberInfo, ArrayList<SSCode> ssList,
-            ExtBasicServiceCode basicService, boolean forwardingInterrogationRequired, ISDNAddressString vmscAddress,
-            MAPExtensionContainer extensionContainer, NAEAPreferredCI naeaPreferredCI, CCBSIndicators ccbsIndicators,
-            ISDNAddressString msisdn, NumberPortabilityStatus nrPortabilityStatus, Integer istAlertTimer,
-            SupportedCamelPhases supportedCamelPhases, OfferedCamel4CSIs offeredCamel4CSIs, RoutingInfo routingInfo2,
-            ArrayList<SSCode> ssList2, ExtBasicServiceCode basicService2, AllowedServices allowedServices,
-            UnavailabilityCause unavailabilityCause, boolean releaseResourcesSupported, ExternalSignalInfo gsmBearerCapability)
-            throws MAPException {
-        doAddSendRoutingInformationResponse(true, invokeId, imsi, extRoutingInfo, cugCheckInfo, cugSubscriptionFlag,
-                subscriberInfo, ssList, basicService, forwardingInterrogationRequired, vmscAddress, extensionContainer,
-                naeaPreferredCI, ccbsIndicators, msisdn, nrPortabilityStatus, istAlertTimer, supportedCamelPhases,
-                offeredCamel4CSIs, routingInfo2, ssList2, basicService2, allowedServices, unavailabilityCause,
-                releaseResourcesSupported, gsmBearerCapability);
-    }
-
-    protected void doAddSendRoutingInformationResponse(boolean nonLast, long invokeId, IMSI imsi,
-            ExtendedRoutingInfo extRoutingInfo, CUGCheckInfo cugCheckInfo, boolean cugSubscriptionFlag,
-            SubscriberInfo subscriberInfo, ArrayList<SSCode> ssList, ExtBasicServiceCode basicService,
-            boolean forwardingInterrogationRequired, ISDNAddressString vmscAddress, MAPExtensionContainer extensionContainer,
-            NAEAPreferredCI naeaPreferredCI, CCBSIndicators ccbsIndicators, ISDNAddressString msisdn,
-            NumberPortabilityStatus nrPortabilityStatus, Integer istAlertTimer, SupportedCamelPhases supportedCamelPhases,
-            OfferedCamel4CSIs offeredCamel4CSIs, RoutingInfo routingInfo2, ArrayList<SSCode> ssList2,
-            ExtBasicServiceCode basicService2, AllowedServices allowedServices, UnavailabilityCause unavailabilityCause,
-            boolean releaseResourcesSupported, ExternalSignalInfo gsmBearerCapability) throws MAPException {
 
         MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.locationInfoRetrievalContext)
                 || (vers != MAPApplicationContextVersion.version1 && vers != MAPApplicationContextVersion.version2 && vers != MAPApplicationContextVersion.version3))
             throw new MAPException(
                     "Bad application context name for addSendRoutingInformationResponse: must be locationInfoRetrievalContext_V1, V2 or V3");
-        if (vers != MAPApplicationContextVersion.version3 && nonLast)
-            throw new MAPException(
-                    "Bad application context name for addSendRoutingInformationResponse - nonLast: must be locationInfoRetrievalContext_V3");
+
+        ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
+                .createTCResultLastRequest();
+        resultLast.setInvokeId(invokeId);
 
         // Operation Code
         OperationCode oc = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createOperationCode();
         oc.setLocalOperationCode((long) MAPOperationCode.sendRoutingInfo);
+        resultLast.setOperationCode(oc);
 
-        Parameter p = null;
         if (true) { // validate parameters here...
             SendRoutingInformationResponseImpl res = new SendRoutingInformationResponseImpl(this.appCntx
                     .getApplicationContextVersion().getVersion(), imsi, extRoutingInfo, cugCheckInfo, cugSubscriptionFlag,
@@ -265,36 +232,15 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
             AsnOutputStream aos = new AsnOutputStream();
             res.encodeData(aos);
 
-            p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
+            Parameter p = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory().createParameter();
             p.setTagClass(res.getTagClass());
             p.setPrimitive(res.getIsPrimitive());
             p.setTag(res.getTag());
             p.setData(aos.toByteArray());
+            resultLast.setParameter(p);
         }
 
-        if (nonLast) {
-            ReturnResult resultLastNonLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                    .createTCResultRequest();
-            resultLastNonLast.setInvokeId(invokeId);
-
-            resultLastNonLast.setOperationCode(oc);
-
-            if (p != null)
-                resultLastNonLast.setParameter(p);
-
-            this.sendReturnResultComponent(resultLastNonLast);
-        } else {
-            ReturnResultLast resultLast = this.mapProviderImpl.getTCAPProvider().getComponentPrimitiveFactory()
-                    .createTCResultLastRequest();
-            resultLast.setInvokeId(invokeId);
-
-            resultLast.setOperationCode(oc);
-
-            if (p != null)
-                resultLast.setParameter(p);
-
-            this.sendReturnResultLastComponent(resultLast);
-        }
+        this.sendReturnResultLastComponent(resultLast);
     }
 
     @Override

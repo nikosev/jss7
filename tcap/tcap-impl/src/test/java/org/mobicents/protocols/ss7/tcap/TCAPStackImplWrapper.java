@@ -25,6 +25,7 @@ package org.mobicents.protocols.ss7.tcap;
 import java.util.Map;
 
 import org.mobicents.protocols.ss7.sccp.SccpProvider;
+import org.mobicents.protocols.ss7.tcap.TCAPProviderImpl.PrevewDialogDataKey;
 
 /**
  *
@@ -39,7 +40,7 @@ public class TCAPStackImplWrapper extends TCAPStackImpl {
         this.tcapProvider = new TCAPProviderImplWrapper(sccpProvider, this, ssn);
     }
 
-    public Map<PreviewDialogDataKey, PreviewDialogData> getDialogPreviewList() {
+    public Map<PrevewDialogDataKey, PrevewDialogData> getDialogPreviewList() {
         TCAPProviderImplWrapper prov = (TCAPProviderImplWrapper) this.getProvider();
         return prov.getDialogPreviewList();
     }

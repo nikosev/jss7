@@ -23,7 +23,6 @@
 package org.mobicents.protocols.ss7.tools.traceparser;
 
 import javolution.util.FastMap;
-
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.Tag;
@@ -72,8 +71,6 @@ import org.mobicents.protocols.ss7.cap.api.service.circuitSwitchedCall.RequestRe
 import org.mobicents.protocols.ss7.cap.api.service.circuitSwitchedCall.ResetTimerRequest;
 import org.mobicents.protocols.ss7.cap.api.service.circuitSwitchedCall.SendChargingInformationRequest;
 import org.mobicents.protocols.ss7.cap.api.service.circuitSwitchedCall.SpecializedResourceReportRequest;
-import org.mobicents.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegRequest;
-import org.mobicents.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegResponse;
 import org.mobicents.protocols.ss7.cap.api.service.gprs.ActivityTestGPRSRequest;
 import org.mobicents.protocols.ss7.cap.api.service.gprs.ActivityTestGPRSResponse;
 import org.mobicents.protocols.ss7.cap.api.service.gprs.ApplyChargingGPRSRequest;
@@ -121,6 +118,7 @@ import org.mobicents.protocols.ss7.map.api.dialog.MAPRefuseReason;
 import org.mobicents.protocols.ss7.map.api.dialog.MAPUserAbortChoice;
 import org.mobicents.protocols.ss7.map.api.errors.MAPErrorMessage;
 import org.mobicents.protocols.ss7.map.api.primitives.AddressString;
+import org.mobicents.protocols.ss7.map.api.primitives.IMSI;
 import org.mobicents.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.mobicents.protocols.ss7.map.api.service.callhandling.IstCommandRequest;
 import org.mobicents.protocols.ss7.map.api.service.callhandling.IstCommandResponse;
@@ -161,8 +159,6 @@ import org.mobicents.protocols.ss7.map.api.service.mobility.oam.ActivateTraceMod
 import org.mobicents.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeResponse_Mobility;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeInterrogationRequest;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeInterrogationResponse;
-import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeSubscriptionInterrogationRequest;
-import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeSubscriptionInterrogationResponse;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.ProvideSubscriberInfoRequest;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.ProvideSubscriberInfoResponse;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.DeleteSubscriberDataRequest;
@@ -1593,7 +1589,7 @@ public class SS7TraceParser implements TraceReaderListener, MAPDialogListener, C
 
     @Override
     public void onDialogRequestEricsson(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
-            AddressString eriImsi, AddressString eriVlrNo) {
+            IMSI eriImsi, AddressString eriVlrNo) {
 
         DialogImplWrapper di = (DialogImplWrapper) ((MAPDialogImpl) mapDialog).getTcapDialog();
         if (mapDialog.getApplicationContext() != null) {
@@ -2056,11 +2052,6 @@ public class SS7TraceParser implements TraceReaderListener, MAPDialogListener, C
     }
 
     @Override
-    public void onCallGapRequest(org.mobicents.protocols.ss7.cap.api.service.circuitSwitchedCall.CallGapRequest ind) {
-
-    }
-
-    @Override
     public void onCallInformationRequestRequest(CallInformationRequestRequest arg0) {
         // TODO Auto-generated method stub
 
@@ -2215,14 +2206,6 @@ public class SS7TraceParser implements TraceReaderListener, MAPDialogListener, C
     @Override
     public void onAnyTimeInterrogationResponse(AnyTimeInterrogationResponse arg0) {
         // TODO Auto-generated method stub
-
-    }
-
-    public void onAnyTimeSubscriptionInterrogationRequest(AnyTimeSubscriptionInterrogationRequest request) {
-
-    }
-
-    public void onAnyTimeSubscriptionInterrogationResponse(AnyTimeSubscriptionInterrogationResponse response) {
 
     }
 
@@ -2994,18 +2977,6 @@ public class SS7TraceParser implements TraceReaderListener, MAPDialogListener, C
 
     }
 
-    @Override
-    public void onSplitLegRequest(SplitLegRequest ind) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void onSplitLegResponse(SplitLegResponse ind) {
-        // TODO Auto-generated method stub
-
-    }
-
 //    public class DialogMessageChainKey {
 //        private long dialogId1;
 //        private long dialogId2;
@@ -3058,6 +3029,5 @@ public class SS7TraceParser implements TraceReaderListener, MAPDialogListener, C
 //            return res;
 //        }
 //    }
-
 }
 

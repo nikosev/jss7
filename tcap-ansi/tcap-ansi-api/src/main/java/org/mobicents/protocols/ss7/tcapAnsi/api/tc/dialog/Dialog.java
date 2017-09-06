@@ -94,13 +94,6 @@ public interface Dialog extends Serializable {
     void setRemoteAddress(SccpAddress remoteAddress);
 
     /**
-     * Gets ssn dialog value
-     *
-     * @return
-     */
-    int getLocalSsn();
-
-    /**
      * Last sent/received ACN
      *
      * @return the acn

@@ -27,7 +27,6 @@ import org.mobicents.protocols.ss7.mtp.Mtp3UserPart;
 import org.mobicents.protocols.ss7.oam.common.jmx.MBeanHost;
 import org.mobicents.protocols.ss7.oam.common.jmxss7.Ss7Layer;
 import org.mobicents.protocols.ss7.sccp.Router;
-import org.mobicents.protocols.ss7.sccp.SccpCongestionControlAlgo;
 import org.mobicents.protocols.ss7.sccp.SccpProtocolVersion;
 import org.mobicents.protocols.ss7.sccp.SccpProvider;
 import org.mobicents.protocols.ss7.sccp.SccpResource;
@@ -144,12 +143,12 @@ public class SccpManagementJmx implements SccpManagementJmxMBean {
     }
 
     @Override
-    public void setRemoveSpc(boolean removeSpc) throws Exception {
+    public void setRemoveSpc(boolean removeSpc) {
         this.wrappedSccpStack.setRemoveSpc(removeSpc);
     }
 
     @Override
-    public void setPreviewMode(boolean previewMode) throws Exception {
+    public void setPreviewMode(boolean previewMode) {
         this.wrappedSccpStack.setPreviewMode(previewMode);
     }
 
@@ -159,32 +158,32 @@ public class SccpManagementJmx implements SccpManagementJmxMBean {
     }
 
     @Override
-    public void setSstTimerDuration_Min(int sstTimerDuration_Min) throws Exception {
+    public void setSstTimerDuration_Min(int sstTimerDuration_Min) {
         this.wrappedSccpStack.setSstTimerDuration_Min(sstTimerDuration_Min);
     }
 
     @Override
-    public void setSstTimerDuration_Max(int sstTimerDuration_Max) throws Exception {
+    public void setSstTimerDuration_Max(int sstTimerDuration_Max) {
         this.wrappedSccpStack.setSstTimerDuration_Max(sstTimerDuration_Max);
     }
 
     @Override
-    public void setSstTimerDuration_IncreaseFactor(double sstTimerDuration_IncreaseFactor) throws Exception {
+    public void setSstTimerDuration_IncreaseFactor(double sstTimerDuration_IncreaseFactor) {
         this.wrappedSccpStack.setSstTimerDuration_IncreaseFactor(sstTimerDuration_IncreaseFactor);
     }
 
     @Override
-    public void setZMarginXudtMessage(int zMarginXudtMessage) throws Exception {
+    public void setZMarginXudtMessage(int zMarginXudtMessage) {
         this.wrappedSccpStack.setZMarginXudtMessage(zMarginXudtMessage);
     }
 
     @Override
-    public void setMaxDataMessage(int maxDataMessage) throws Exception {
+    public void setMaxDataMessage(int maxDataMessage) {
         this.wrappedSccpStack.setMaxDataMessage(maxDataMessage);
     }
 
     @Override
-    public void setReassemblyTimerDelay(int reassemblyTimerDelay) throws Exception {
+    public void setReassemblyTimerDelay(int reassemblyTimerDelay) {
         this.wrappedSccpStack.setReassemblyTimerDelay(reassemblyTimerDelay);
     }
 
@@ -195,58 +194,13 @@ public class SccpManagementJmx implements SccpManagementJmxMBean {
     }
 
     @Override
-    public void setSccpProtocolVersion(SccpProtocolVersion sccpProtocolVersion) throws Exception {
+    public void setSccpProtocolVersion(SccpProtocolVersion sccpProtocolVersion) {
         this.wrappedSccpStack.setSccpProtocolVersion(sccpProtocolVersion);
     }
 
     @Override
     public SccpProtocolVersion getSccpProtocolVersion() {
         return this.wrappedSccpStack.getSccpProtocolVersion();
-    }
-
-    @Override
-    public int getCongControlTIMER_A() {
-        return this.wrappedSccpStack.getCongControlTIMER_A();
-    }
-
-    @Override
-    public void setCongControlTIMER_A(int value) throws Exception {
-        this.wrappedSccpStack.setCongControlTIMER_A(value);
-    }
-
-    @Override
-    public int getCongControlTIMER_D() {
-        return this.wrappedSccpStack.getCongControlTIMER_D();
-    }
-
-    @Override
-    public void setCongControlTIMER_D(int value) throws Exception {
-        this.wrappedSccpStack.setCongControlTIMER_D(value);
-    }
-
-    @Override
-    public SccpCongestionControlAlgo getCongControl_Algo() {
-        return this.wrappedSccpStack.getCongControl_Algo();
-    }
-
-    @Override
-    public void setCongControl_Algo(SccpCongestionControlAlgo value) throws Exception {
-        this.wrappedSccpStack.setCongControl_Algo(value);
-    }
-
-    @Override
-    public boolean isCongControl_blockingOutgoungSccpMessages() {
-        return this.wrappedSccpStack.isCongControl_blockingOutgoungSccpMessages();
-    }
-
-    @Override
-    public void setCongControl_blockingOutgoungSccpMessages(boolean value) throws Exception {
-        this.wrappedSccpStack.setCongControl_blockingOutgoungSccpMessages(value);
-    }
-
-    @Override
-    public boolean isStarted() {
-        return this.wrappedSccpStack.isStarted();
     }
 
 }

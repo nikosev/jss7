@@ -22,6 +22,8 @@
 
 package org.mobicents.protocols.ss7.sccp.impl.messageflow;
 
+import static org.testng.Assert.assertEquals;
+
 import org.mobicents.protocols.ss7.Util;
 import org.mobicents.protocols.ss7.indicator.RoutingIndicator;
 import org.mobicents.protocols.ss7.sccp.LoadSharingAlgorithm;
@@ -33,14 +35,13 @@ import org.mobicents.protocols.ss7.sccp.impl.SccpStackImpl;
 import org.mobicents.protocols.ss7.sccp.impl.SccpStackImplProxy;
 import org.mobicents.protocols.ss7.sccp.impl.User;
 import org.mobicents.protocols.ss7.sccp.message.SccpDataMessage;
+import org.mobicents.protocols.ss7.sccp.parameter.GlobalTitle;
 import org.mobicents.protocols.ss7.sccp.parameter.SccpAddress;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertEquals;
 
 /**
  * 
@@ -147,7 +148,7 @@ public class LoadSharingTest extends SccpHarness {
                 RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE,
                 sccpProvider1.getParameterFactory().createGlobalTitle("222222", 1), 0, 0);
         sccpStack1.getRouter().addRule(1, RuleType.SOLITARY, LoadSharingAlgorithm.Undefined, OriginationType.ALL, pattern, "K",
-                1, -1, null, 0,null);
+                1, -1, null, 0);
 
         // Primary and backup are available
         SccpAddress a3 = sccpProvider1.getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE,
@@ -204,7 +205,7 @@ public class LoadSharingTest extends SccpHarness {
         // ---- Dominant case
         sccpStack1.getRouter().removeRule(1);
         sccpStack1.getRouter().addRule(1, RuleType.DOMINANT, LoadSharingAlgorithm.Undefined, OriginationType.ALL, pattern, "K",
-                1, 3, null, 0, null);
+                1, 3, null, 0);
 
         // Primary and backup are available
         a3 = sccpProvider1.getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE,
@@ -260,10 +261,10 @@ public class LoadSharingTest extends SccpHarness {
         // ---- Loadshared case
         sccpStack1.getRouter().removeRule(1);
         sccpStack1.getRouter().addRule(1, RuleType.LOADSHARED, LoadSharingAlgorithm.Bit4, OriginationType.ALL, pattern, "K", 1,
-                3, null, 0, null);
+                3, null, 0);
         // rule which primaryAddress ssn==0 (getting ssn from origin CalledPartyAddress)
         sccpStack1.getRouter().addRule(2, RuleType.LOADSHARED, LoadSharingAlgorithm.Bit4, OriginationType.ALL, pattern2, "K",
-                2, 3, null, 0, null);
+                2, 3, null, 0);
 
         // Primary and backup are available
         // - class 1 (route by sls): sls = 0xEF: primary route (sls & 0x10 rule)
@@ -366,7 +367,7 @@ public class LoadSharingTest extends SccpHarness {
         sccpStack1.getRouter().removeRule(1);
         sccpStack1.getRouter().removeRule(2);
         sccpStack1.getRouter().addRule(1, RuleType.BROADCAST, LoadSharingAlgorithm.Undefined, OriginationType.ALL, pattern,
-                "K", 1, 3, null, 0, null);
+                "K", 1, 3, null, 0);
 
         // Primary and backup are available
         a3 = sccpProvider1.getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE,

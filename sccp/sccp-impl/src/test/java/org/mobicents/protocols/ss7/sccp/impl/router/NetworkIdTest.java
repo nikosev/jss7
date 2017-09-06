@@ -22,6 +22,10 @@
 
 package org.mobicents.protocols.ss7.sccp.impl.router;
 
+import static org.testng.Assert.*;
+
+import java.io.IOException;
+
 import org.apache.log4j.Logger;
 import org.mobicents.protocols.ss7.indicator.NatureOfAddress;
 import org.mobicents.protocols.ss7.indicator.NumberingPlan;
@@ -33,7 +37,6 @@ import org.mobicents.protocols.ss7.mtp.Mtp3UserPartListener;
 import org.mobicents.protocols.ss7.mtp.RoutingLabelFormat;
 import org.mobicents.protocols.ss7.sccp.LoadSharingAlgorithm;
 import org.mobicents.protocols.ss7.sccp.LongMessageRuleType;
-import org.mobicents.protocols.ss7.sccp.NetworkIdState;
 import org.mobicents.protocols.ss7.sccp.OriginationType;
 import org.mobicents.protocols.ss7.sccp.RemoteSccpStatus;
 import org.mobicents.protocols.ss7.sccp.RuleType;
@@ -56,16 +59,11 @@ import org.mobicents.protocols.ss7.sccp.parameter.HopCounter;
 import org.mobicents.protocols.ss7.sccp.parameter.Importance;
 import org.mobicents.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.mobicents.protocols.ss7.sccp.parameter.SccpAddress;
-import org.mobicents.ss7.congestion.ExecutorCongestionMonitor;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.io.IOException;
-
-import static org.testng.Assert.assertEquals;
 
 /**
  * 
@@ -157,11 +155,10 @@ public class NetworkIdTest implements SccpListener {
         router.addRoutingAddress(4, primaryAddr2_L);
 
         SccpAddress pattern = factory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE, factory.createGlobalTitle("*", 1), 0, 0);
-        SccpAddress patternDefaultCalling = factory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE, factory.createGlobalTitle("*", 1), 0, 0);
-        router.addRule(1, RuleType.SOLITARY, LoadSharingAlgorithm.Undefined, OriginationType.LOCAL, pattern, "K", 1, 1, null, 1, patternDefaultCalling);
-        router.addRule(2, RuleType.SOLITARY, LoadSharingAlgorithm.Undefined, OriginationType.LOCAL, pattern, "K", 2, 2, null, 2, patternDefaultCalling);
-        router.addRule(3, RuleType.SOLITARY, LoadSharingAlgorithm.Undefined, OriginationType.REMOTE, pattern, "K", 3, 3, null, 1, patternDefaultCalling);
-        router.addRule(4, RuleType.SOLITARY, LoadSharingAlgorithm.Undefined, OriginationType.REMOTE, pattern, "K", 4, 4, null, 2, patternDefaultCalling);
+        router.addRule(1, RuleType.SOLITARY, LoadSharingAlgorithm.Undefined, OriginationType.LOCAL, pattern, "K", 1, 1, null, 1);
+        router.addRule(2, RuleType.SOLITARY, LoadSharingAlgorithm.Undefined, OriginationType.LOCAL, pattern, "K", 2, 2, null, 2);
+        router.addRule(3, RuleType.SOLITARY, LoadSharingAlgorithm.Undefined, OriginationType.REMOTE, pattern, "K", 3, 3, null, 1);
+        router.addRule(4, RuleType.SOLITARY, LoadSharingAlgorithm.Undefined, OriginationType.REMOTE, pattern, "K", 4, 4, null, 2);
         // int id, RuleType ruleType, LoadSharingAlgorithm algo, OriginationType
         // originationType, SccpAddress pattern, String mask, int pAddressId,
         // int sAddressId, Integer newCallingPartyAddressAddressId, int networkId
@@ -293,36 +290,6 @@ public class NetworkIdTest implements SccpListener {
             // TODO Auto-generated method stub
             return false;
         }
-
-        @Override
-        public int getDeliveryMessageThreadCount() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public void setDeliveryMessageThreadCount(int deliveryMessageThreadCount) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public ExecutorCongestionMonitor getExecutorCongestionMonitor() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public void start() throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void stop() throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
     }
 
     @Override
@@ -342,7 +309,13 @@ public class NetworkIdTest implements SccpListener {
     }
 
     @Override
-    public void onCoordResponse(int ssn, int multiplicityIndicator) {
+    public void onCoordRequest(int dpc, int ssn, int multiplicityIndicator) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onCoordResponse(int dpc, int ssn, int multiplicityIndicator) {
         // TODO Auto-generated method stub
         
     }
@@ -354,14 +327,7 @@ public class NetworkIdTest implements SccpListener {
     }
 
     @Override
-    public void onPcState(int dpc, SignallingPointStatus status, Integer restrictedImportanceLevel,
-            RemoteSccpStatus remoteSccpStatus) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void onNetworkIdState(int networkId, NetworkIdState networkIdState) {
+    public void onPcState(int dpc, SignallingPointStatus status, int restrictedImportanceLevel, RemoteSccpStatus remoteSccpStatus) {
         // TODO Auto-generated method stub
         
     }

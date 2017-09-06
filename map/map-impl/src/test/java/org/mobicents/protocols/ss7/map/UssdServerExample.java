@@ -17,6 +17,7 @@ import org.mobicents.protocols.ss7.map.api.dialog.MAPRefuseReason;
 import org.mobicents.protocols.ss7.map.api.dialog.MAPUserAbortChoice;
 import org.mobicents.protocols.ss7.map.api.errors.MAPErrorMessage;
 import org.mobicents.protocols.ss7.map.api.primitives.AddressString;
+import org.mobicents.protocols.ss7.map.api.primitives.IMSI;
 import org.mobicents.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.mobicents.protocols.ss7.map.api.primitives.USSDString;
 import org.mobicents.protocols.ss7.map.api.service.supplementary.ActivateSSRequest;
@@ -168,7 +169,7 @@ public class UssdServerExample implements MAPDialogListener, MAPServiceSupplemen
     }
 
     public void onDialogRequestEricsson(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
-            AddressString eriImsi, AddressString eriVlrNo) {
+            IMSI eriImsi, AddressString eriVlrNo) {
         // TODO Auto-generated method stub
 
     }

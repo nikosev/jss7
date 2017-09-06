@@ -22,6 +22,8 @@
 
 package org.mobicents.protocols.ss7.map.service.sms;
 
+import java.io.IOException;
+
 import org.mobicents.protocols.asn.AsnException;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -33,13 +35,10 @@ import org.mobicents.protocols.ss7.map.api.MAPParsingComponentException;
 import org.mobicents.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
 import org.mobicents.protocols.ss7.map.api.primitives.IMSI;
 import org.mobicents.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.mobicents.protocols.ss7.map.api.service.sms.IpSmGwGuidance;
 import org.mobicents.protocols.ss7.map.api.service.sms.LocationInfoWithLMSI;
 import org.mobicents.protocols.ss7.map.api.service.sms.SendRoutingInfoForSMResponse;
 import org.mobicents.protocols.ss7.map.primitives.IMSIImpl;
 import org.mobicents.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
-
-import java.io.IOException;
 
 /**
  *
@@ -51,7 +50,6 @@ public class SendRoutingInfoForSMResponseImpl extends SmsMessageImpl implements 
     protected static final int _TAG_LocationInfoWithLMSI = 0;
     protected static final int _TAG_mwdSet = 2;
     protected static final int _TAG_ExtensionContainer = 4;
-    protected static final int _TAG_IpSmGwGuidance = 5;
 
     protected String _PrimitiveName = "SendRoutingInfoForSMResponse";
 
@@ -59,18 +57,16 @@ public class SendRoutingInfoForSMResponseImpl extends SmsMessageImpl implements 
     private LocationInfoWithLMSI locationInfoWithLMSI;
     private MAPExtensionContainer extensionContainer;
     private Boolean mwdSet;
-    private IpSmGwGuidance ipSmGwGuidance;
 
     public SendRoutingInfoForSMResponseImpl() {
     }
 
     public SendRoutingInfoForSMResponseImpl(IMSI imsi, LocationInfoWithLMSI locationInfoWithLMSI,
-            MAPExtensionContainer extensionContainer, Boolean mwdSet, IpSmGwGuidance ipSmGwGuidance) {
+            MAPExtensionContainer extensionContainer, Boolean mwdSet) {
         this.imsi = imsi;
         this.locationInfoWithLMSI = locationInfoWithLMSI;
         this.extensionContainer = extensionContainer;
         this.mwdSet = mwdSet;
-        this.ipSmGwGuidance = ipSmGwGuidance;
     }
 
     public MAPMessageType getMessageType() {
@@ -95,10 +91,6 @@ public class SendRoutingInfoForSMResponseImpl extends SmsMessageImpl implements 
 
     public Boolean getMwdSet() {
         return mwdSet;
-    }
-
-    public IpSmGwGuidance getIpSmGwGuidance() {
-        return ipSmGwGuidance;
     }
 
     public int getTag() throws MAPException {
@@ -146,7 +138,6 @@ public class SendRoutingInfoForSMResponseImpl extends SmsMessageImpl implements 
         this.locationInfoWithLMSI = null;
         this.extensionContainer = null;
         this.mwdSet = null;
-        this.ipSmGwGuidance = null;
 
         AsnInputStream ais = ansIS.readSequenceStreamData(length);
         int num = 0;
@@ -196,14 +187,6 @@ public class SendRoutingInfoForSMResponseImpl extends SmsMessageImpl implements 
                                 this.mwdSet = ais.readBoolean();
                                 break;
 
-                            case _TAG_IpSmGwGuidance:
-                                if (ais.isTagPrimitive())
-                                    throw new MAPParsingComponentException("Error while decoding " + _PrimitiveName
-                                            + ".ipSmGwGuidance: Parameter ipSmGwGuidance is primitive",
-                                            MAPParsingComponentExceptionReason.MistypedParameter);
-                                this.ipSmGwGuidance = new IpSmGwGuidanceImpl();
-                                ((IpSmGwGuidanceImpl) this.ipSmGwGuidance).decodeAll(ais);
-                                break;
                             default:
                                 ais.advanceElement();
                                 break;
@@ -260,10 +243,6 @@ public class SendRoutingInfoForSMResponseImpl extends SmsMessageImpl implements 
                 throw new MAPException("AsnException when encoding " + _PrimitiveName + ": " + e.getMessage(), e);
             }
         }
-        if (this.ipSmGwGuidance != null) {
-            ((IpSmGwGuidanceImpl) this.ipSmGwGuidance).encodeAll(asnOs, Tag.CLASS_CONTEXT_SPECIFIC,
-                    _TAG_IpSmGwGuidance);
-        }
     }
 
     @Override
@@ -290,10 +269,6 @@ public class SendRoutingInfoForSMResponseImpl extends SmsMessageImpl implements 
         if (this.mwdSet != null) {
             sb.append(", mwdSet=");
             sb.append(this.mwdSet.toString());
-        }
-        if (this.ipSmGwGuidance != null) {
-            sb.append(", ipSmGwGuidance=");
-            sb.append(this.ipSmGwGuidance.toString());
         }
 
         sb.append("]");

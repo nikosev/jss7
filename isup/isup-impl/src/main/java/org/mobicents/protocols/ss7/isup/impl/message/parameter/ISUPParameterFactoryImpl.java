@@ -796,9 +796,4 @@ public class ISUPParameterFactoryImpl implements ISUPParameterFactory {
 
         return new UserToUserInformationImpl();
     }
-
-    @Override
-    public RedirectForwardInformation createRedirectForwardInformation() {
-        return new RedirectForwardInformationImpl();
-    }
 }

@@ -46,11 +46,4 @@ public interface DialogRequestAPDU extends DialogAPDU {
 
     void setUserInformation(UserInformation ui);
 
-    /**
-     * Return true if the decoded request contained malformed User Information element
-     *
-     * @return true if the decoded request contained malformed User Information element
-     */
-    boolean isMalformedUserInformation();
-
 }

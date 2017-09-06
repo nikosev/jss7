@@ -61,10 +61,6 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.sms.TestSmsClientManMBe
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.TestSmsServerManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdClientManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdServerManMBean;
-import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ati.TestAtiClientForm;
-import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ati.TestAtiClientParamForm;
-import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ati.TestAtiServerForm;
-import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ati.TestAtiServerParamForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.cap.TestCapScfForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.cap.TestCapScfParamForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.cap.TestCapSsfForm;
@@ -81,12 +77,6 @@ import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ussd.TestUssdClientF
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ussd.TestUssdClientParamForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ussd.TestUssdServerForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ussd.TestUssdServerParamForm;
-import org.mobicents.protocols.ss7.tools.simulatorgui.tests.lcs.TestMapLcsClientForm;
-import org.mobicents.protocols.ss7.tools.simulator.tests.lcs.TestMapLcsClientManMBean;
-import org.mobicents.protocols.ss7.tools.simulatorgui.tests.lcs.TestMapLcsClientParamForm;
-import org.mobicents.protocols.ss7.tools.simulatorgui.tests.lcs.TestMapLcsServerForm;
-import org.mobicents.protocols.ss7.tools.simulator.tests.lcs.TestMapLcsServerManMBean;
-import org.mobicents.protocols.ss7.tools.simulatorgui.tests.lcs.TestMapLcsServerParamForm;
 
 /**
  *
@@ -116,8 +106,6 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
     private TestAtiServerManMBean atiServer;
     private TestCheckImeiClientManMBean checkImeiClient;
     private TestCheckImeiServerManMBean checkImeiServer;
-    private TestMapLcsClientManMBean mapLcsClient;
-    private TestMapLcsServerManMBean mapLcsServer;
 
     private TestingForm testingForm;
 
@@ -333,18 +321,6 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
                         frame.setVisible(true);
                     }
                         break;
-                    case Instance_TestTask.VAL_ATI_TEST_CLIENT: {
-                        TestAtiClientParamForm frame = new TestAtiClientParamForm(getJFrame());
-                        frame.setData(atiClient);
-                        frame.setVisible(true);
-                    }
-                        break;
-                    case Instance_TestTask.VAL_ATI_TEST_SERVER: {
-                        TestAtiServerParamForm frame = new TestAtiServerParamForm(getJFrame());
-                        frame.setData(atiServer);
-                        frame.setVisible(true);
-                    }
-                        break;
                     case Instance_TestTask.VAL_CHECK_IMEI_TEST_CLIENT: {
                         TestCheckImeiClientParamForm frame = new TestCheckImeiClientParamForm(getJFrame());
                         frame.setData(checkImeiClient);
@@ -357,19 +333,6 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
                         frame.setVisible(true);
                     }
                         break;
-                    case Instance_TestTask.VAL_MAP_LCS_TEST_CLIENT: {
-                        TestMapLcsClientParamForm frame = new TestMapLcsClientParamForm(getJFrame());
-                        frame.setData(mapLcsClient);
-                        frame.setVisible(true);
-                    }
-                        break;
-                    case Instance_TestTask.VAL_MAP_LCS_TEST_SERVER: {
-                        TestMapLcsServerParamForm frame = new TestMapLcsServerParamForm(getJFrame());
-                        frame.setData(mapLcsServer);
-                        frame.setVisible(true);
-                    }
-                        break;
-
                 // TODO: other tests form options editing
                 }
             }
@@ -431,18 +394,6 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
                 dlg = testCapSsfForm;
             }
                 break;
-            case Instance_TestTask.VAL_ATI_TEST_CLIENT: {
-                TestAtiClientForm testAtiClientForm = new TestAtiClientForm(getJFrame());
-                testAtiClientForm.setData(atiClient);
-                dlg = testAtiClientForm;
-            }
-                break;
-            case Instance_TestTask.VAL_ATI_TEST_SERVER: {
-                TestAtiServerForm testAtiServerForm = new TestAtiServerForm(getJFrame());
-                testAtiServerForm.setData(atiServer);
-                dlg = testAtiServerForm;
-            }
-                break;
             case Instance_TestTask.VAL_CHECK_IMEI_TEST_CLIENT: {
                 TestCheckImeiClientForm testCheckImeiClientForm = new TestCheckImeiClientForm(getJFrame());
                 testCheckImeiClientForm.setData(checkImeiClient);
@@ -455,21 +406,6 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
                 dlg = testCheckImeiServerForm;
             }
                 break;
-            case Instance_TestTask.VAL_MAP_LCS_TEST_CLIENT: {
-                TestMapLcsClientForm testMapLcsClientForm = new TestMapLcsClientForm(getJFrame());
-                // falonso: change checkImeiClient, do not push until done so
-                testMapLcsClientForm.setData(mapLcsClient);
-                dlg = testMapLcsClientForm;
-            }
-                break;
-            case Instance_TestTask.VAL_MAP_LCS_TEST_SERVER: {
-                TestMapLcsServerForm testMapLcsServerForm = new TestMapLcsServerForm(getJFrame());
-                // falonso: change checkImeiClient, do not push until done so
-                testMapLcsServerForm.setData(mapLcsServer);
-                dlg = testMapLcsServerForm;
-            }
-                break;
-
 
         // TODO: other tests form options editing
         }
@@ -508,11 +444,10 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
     }
 
     protected void startHost(String appName, boolean isRemote, final TesterHost hostImpl, TesterHostMBean host, M3uaManMBean m3ua, DialogicManMBean dialogic,
-            SccpManMBean sccp, MapManMBean map, CapManMBean cap, TestUssdClientManMBean ussdClient, TestUssdServerManMBean ussdServer,
-            TestSmsClientManMBean smsClient, TestSmsServerManMBean smsServer, TestCapScfManMBean capScf, TestCapSsfManMBean capSsf,
-            TestAtiClientManMBean atiClient, TestAtiServerManMBean atiServer,
-            TestCheckImeiClientManMBean checkImeiClient, TestCheckImeiServerManMBean checkImeiServer,
-            TestMapLcsClientManMBean mapLcsClient, TestMapLcsServerManMBean mapLcsServer) {
+                             SccpManMBean sccp, MapManMBean map, CapManMBean cap, TestUssdClientManMBean ussdClient, TestUssdServerManMBean ussdServer,
+                             TestSmsClientManMBean smsClient, TestSmsServerManMBean smsServer, TestCapScfManMBean capScf, TestCapSsfManMBean capSsf,
+                             TestAtiClientManMBean atiClient, TestAtiServerManMBean atiServer,
+                             TestCheckImeiClientManMBean checkImeiClient, TestCheckImeiServerManMBean checkImeiServer) {
         setTitle(getTitle() + appName);
 
         this.hostImpl = hostImpl;
@@ -530,11 +465,8 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
         this.capSsf = capSsf;
         this.atiClient = atiClient;
         this.atiServer = atiServer;
-        this.checkImeiClient = checkImeiClient;
-        this.checkImeiServer = checkImeiServer;
         this.isRemote = isRemote;
-        this.mapLcsClient = mapLcsClient;
-        this.mapLcsServer = mapLcsServer;
+
 
         this.btTermRemote.setEnabled(isRemote);
 

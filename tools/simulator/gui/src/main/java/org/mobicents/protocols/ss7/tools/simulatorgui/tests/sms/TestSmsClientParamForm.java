@@ -83,7 +83,6 @@ public class TestSmsClientParamForm extends JDialog {
     private JCheckBox cbReturn20PersDeliveryErrors;
     private JCheckBox cbContinueDialog;
     private JComboBox cbRsmdsReaction;
-    private JCheckBox cbStatusReportRequest;
     private JTextField tbNationalLanguageCode;
 
     public TestSmsClientParamForm(JFrame owner) {
@@ -267,10 +266,6 @@ public class TestSmsClientParamForm extends JDialog {
         tbNationalLanguageCode.setBounds(369, 284, 75, 20);
         panel_mofsm.add(tbNationalLanguageCode);
 
-        cbStatusReportRequest = new JCheckBox("Sending StatusReportRequest in MO request");
-        cbStatusReportRequest.setBounds(12, 308, 609, 23);
-        panel_mofsm.add(cbStatusReportRequest);
-
         JPanel panel_ReportSMDeliveryStatus = new JPanel();
         tabbedPane.addTab("ReportSMDeliveryStatus response", null, panel_ReportSMDeliveryStatus, null);
         panel_ReportSMDeliveryStatus.setLayout(null);
@@ -365,7 +360,6 @@ public class TestSmsClientParamForm extends JDialog {
         cbOneNotificationFor100Dialogs.setSelected(this.smsClient.isOneNotificationFor100Dialogs());
         cbReturn20PersDeliveryErrors.setSelected(this.smsClient.isReturn20PersDeliveryErrors());
         cbContinueDialog.setSelected(this.smsClient.isContinueDialog());
-        cbStatusReportRequest.setSelected(this.smsClient.isStatusReportRequest());
     }
 
     private void loadDataA() {
@@ -395,7 +389,6 @@ public class TestSmsClientParamForm extends JDialog {
         cbOneNotificationFor100Dialogs.setSelected(false);
         cbReturn20PersDeliveryErrors.setSelected(false);
         cbContinueDialog.setSelected(false);
-        cbStatusReportRequest.setSelected(false);
     }
 
     private void loadDataB() {
@@ -442,7 +435,6 @@ public class TestSmsClientParamForm extends JDialog {
         this.smsClient.setOneNotificationFor100Dialogs(cbOneNotificationFor100Dialogs.isSelected());
         this.smsClient.setReturn20PersDeliveryErrors(cbReturn20PersDeliveryErrors.isSelected());
         this.smsClient.setContinueDialog(cbContinueDialog.isSelected());
-        this.smsClient.setStatusReportRequest(cbStatusReportRequest.isSelected());
 
         return true;
     }

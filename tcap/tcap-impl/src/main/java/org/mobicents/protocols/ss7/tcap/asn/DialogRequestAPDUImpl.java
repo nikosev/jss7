@@ -33,7 +33,6 @@ import org.mobicents.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 /**
  * @author baranowb
  * @author sergey vetyutnev
- * @author alerant appngin
  *
  */
 public class DialogRequestAPDUImpl implements DialogRequestAPDU {
@@ -42,7 +41,6 @@ public class DialogRequestAPDUImpl implements DialogRequestAPDU {
     private UserInformation ui;
     private ProtocolVersion protocolVersion = new ProtocolVersionImpl();
     private boolean doNotSendProtocolVersion = false;
-    private boolean malformedUserInformation = false;
 
     public DialogRequestAPDUImpl() {
     }
@@ -120,17 +118,8 @@ public class DialogRequestAPDUImpl implements DialogRequestAPDU {
         return false;
     }
 
-    /**
-     * Return true if the decoded request contained malformed User Information element
-     *
-     * @return true if the decoded request contained malformed User Information element
-     */
-    public boolean isMalformedUserInformation() {
-        return malformedUserInformation;
-    }
-
     public String toString() {
-        return "DialogRequestAPDU[acn=" + acn + ", ui=" + (malformedUserInformation ? "<MALFORMED>" : ui) + "]";
+        return "DialogRequestAPDU[acn=" + acn + ", ui=" + ui + "]";
     }
 
     /*
@@ -167,18 +156,7 @@ public class DialogRequestAPDUImpl implements DialogRequestAPDU {
                     throw new ParseException(PAbortCauseType.IncorrectTxPortion, null,
                             "Error decoding DialogRequestAPDU.user-information: bad tag or tagClass, found tag=" + tag
                                     + ", tagClass=" + localAis.getTagClass());
-                    // Ensure all data is read even in case of malformed user information content.
-                    // Don't throw exception, as user info is not necessary to establish the dialog;
-                    // if TC-User requires ui to be present, it can always send TC-U-Abort.
-                    int uiPos = localAis.position();
-                    try {
-                        this.ui = TcapFactory.createUserInformation(localAis);
-                    } catch (ParseException uiEx) {
-                        this.ui = null;
-                        malformedUserInformation = true;
-                        localAis.position(uiPos); // "reset"
-                        localAis.advanceElement(); // advance without parsing the element
-                    }
+                this.ui = TcapFactory.createUserInformation(localAis);
             }
         } catch (IOException e) {
             throw new ParseException(PAbortCauseType.BadlyFormattedTxPortion, null,

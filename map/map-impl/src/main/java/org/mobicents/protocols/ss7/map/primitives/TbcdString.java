@@ -217,13 +217,10 @@ public abstract class TbcdString implements MAPAsnPrimitive {
             case '#':
                 return 11;
             case 'a':
-            case 'A':
                 return 12;
             case 'b':
-            case 'B':
                 return 13;
             case 'c':
-            case 'C':
                 return 14;
             default:
                 throw new MAPException(

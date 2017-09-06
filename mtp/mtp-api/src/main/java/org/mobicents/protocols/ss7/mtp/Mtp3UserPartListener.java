@@ -34,7 +34,4 @@ public interface Mtp3UserPartListener {
     void onMtp3ResumeMessage(Mtp3ResumePrimitive msg);
 
     void onMtp3StatusMessage(Mtp3StatusPrimitive msg);
-
-    void onMtp3EndCongestionMessage(Mtp3EndCongestionPrimitive msg);
-
 }

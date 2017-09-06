@@ -481,9 +481,8 @@ public class TestSmsServerMan extends TesterBase implements TestSmsServerManMBea
             hostMessageData.mtMessageData = messageData;
             curDialog.setUserObject(hostMessageData);
 
-            curDialog.addSendRoutingInfoForSMRequest(msisdn, true, serviceCentreAddress, null, this.testerHost
-                    .getConfigurationData().getTestSmsServerConfigurationData().isGprsSupportIndicator(), null, null, null,
-                    false, null, false, false, null);
+            curDialog.addSendRoutingInfoForSMRequest(msisdn, true, serviceCentreAddress, null, this.testerHost.getConfigurationData()
+                    .getTestSmsServerConfigurationData().isGprsSupportIndicator(), null, null, null);
 
             // this cap helps us give SCCP error if any
             // curDialog.setReturnMessageOnError(true);

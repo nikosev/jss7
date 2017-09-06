@@ -49,21 +49,13 @@ public class SctpCommandHandler extends CommandHandlerWithHelp {
 
         Node set = parent.addChild("set");
         set.addChild("connectdelay");
-        set.addChild("cc_delaythreshold_1");
-        set.addChild("cc_delaythreshold_2");
-        set.addChild("cc_delaythreshold_3");
-        set.addChild("cc_backtonormal_delaythreshold_1");
-        set.addChild("cc_backtonormal_delaythreshold_2");
-        set.addChild("cc_backtonormal_delaythreshold_3");
+//        set.addChild("singlethread");
+//        set.addChild("workerthreads");
 
         Node get = parent.addChild("get");
         get.addChild("connectdelay");
-        get.addChild("cc_delaythreshold_1");
-        get.addChild("cc_delaythreshold_2");
-        get.addChild("cc_delaythreshold_3");
-        get.addChild("cc_backtonormal_delaythreshold_1");
-        get.addChild("cc_backtonormal_delaythreshold_2");
-        get.addChild("cc_backtonormal_delaythreshold_3");
+        get.addChild("singlethread");
+        get.addChild("workerthreads");
 
     };
 

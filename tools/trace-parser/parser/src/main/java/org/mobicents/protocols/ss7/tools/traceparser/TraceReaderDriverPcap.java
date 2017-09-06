@@ -434,8 +434,7 @@ public class TraceReaderDriverPcap extends TraceReaderDriverBase implements Trac
                             + ((data[pos + 6] & 0xFF) << 8) + (data[pos + 7] & 0xFF);
                 }
 
-                int parLen2 = ((parLen - 1) / 4) * 4 + 4;
-                pos += parLen2;
+                pos += parLen;
             }
 
             if (protocolData != null) {

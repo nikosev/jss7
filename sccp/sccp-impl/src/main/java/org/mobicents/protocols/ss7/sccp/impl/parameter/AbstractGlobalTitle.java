@@ -23,6 +23,8 @@ package org.mobicents.protocols.ss7.sccp.impl.parameter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import javolution.xml.XMLSerializable;
 
@@ -55,6 +57,19 @@ public abstract class AbstractGlobalTitle extends AbstractParameter implements G
     @Override
     public String getDigits() {
         return this.digits;
+    }
+
+    @Override
+    public void decode(final InputStream in, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+        this.digits = this.encodingScheme.decode(in);
+    }
+
+    @Override
+    public void encode(OutputStream out, final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+        if (this.digits == null) {
+            throw new IllegalStateException();
+        }
+        this.encodingScheme.encode(this.digits, out);
     }
 
     @Override

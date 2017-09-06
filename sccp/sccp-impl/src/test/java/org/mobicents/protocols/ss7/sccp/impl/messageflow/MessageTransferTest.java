@@ -73,13 +73,11 @@ public class MessageTransferTest extends SccpHarness {
     protected void createStack1() {
         sccpStack1 = createStack(sccpStack1Name);
         sccpProvider1 = sccpStack1.getSccpProvider();
-        sccpStack1.start();
     }
 
     protected void createStack2() {
         sccpStack2 = createStack(sccpStack2Name);
         sccpProvider2 = sccpStack2.getSccpProvider();
-        sccpStack2.start();
     }
 
     @Override

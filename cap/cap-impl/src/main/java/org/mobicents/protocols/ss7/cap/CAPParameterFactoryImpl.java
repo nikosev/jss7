@@ -467,9 +467,9 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     @Override
     public CAMELAChBillingChargingCharacteristics createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration,
             boolean releaseIfdurationExceeded, Long tariffSwitchInterval, AudibleIndicator audibleIndicator,
-            CAPExtensions extensions, int capVersion) {
+            CAPExtensions extensions, boolean isCAPVersion3orLater) {
         return new CAMELAChBillingChargingCharacteristicsImpl(maxCallPeriodDuration, releaseIfdurationExceeded,
-                tariffSwitchInterval, audibleIndicator, extensions, capVersion);
+                tariffSwitchInterval, audibleIndicator, extensions, isCAPVersion3orLater);
     }
 
     @Override
@@ -797,11 +797,11 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
             BearerCapability bearerCapability2, ExtBasicServiceCode extBasicServiceCode2,
             HighLayerCompatibilityInap highLayerCompatibility2, LowLayerCompatibility lowLayerCompatibility,
             LowLayerCompatibility lowLayerCompatibility2, boolean enhancedDialledServicesAllowed, UUData uuData,
-            boolean collectInformationAllowed, boolean releaseCallArgExtensionAllowed, boolean isCAPVersion3orLater) {
+            boolean isCAPVersion3orLater) {
         return new InitialDPArgExtensionImpl(gmscAddress, forwardingDestinationNumber, msClassmark2, imei,
                 supportedCamelPhases, offeredCamel4Functionalities, bearerCapability2, extBasicServiceCode2,
                 highLayerCompatibility2, lowLayerCompatibility, lowLayerCompatibility2, enhancedDialledServicesAllowed, uuData,
-                collectInformationAllowed, releaseCallArgExtensionAllowed, isCAPVersion3orLater);
+                isCAPVersion3orLater);
     }
 
     @Override

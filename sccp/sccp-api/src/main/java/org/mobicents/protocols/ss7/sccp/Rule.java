@@ -50,11 +50,8 @@ public interface Rule {
 
     int getNetworkId();
 
-    SccpAddress getPatternCallingAddress();
-
-    boolean matches(SccpAddress address, SccpAddress callingAddress, boolean isMtpOriginated, int msgNetworkId);
+    boolean matches(SccpAddress address, boolean isMtpOriginated, int msgNetworkId);
 
     SccpAddress translate(SccpAddress address, SccpAddress ruleAddress);
-
 
 }

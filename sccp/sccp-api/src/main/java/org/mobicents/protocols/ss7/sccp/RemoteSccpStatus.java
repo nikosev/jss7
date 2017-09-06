@@ -32,7 +32,7 @@ public enum RemoteSccpStatus {
      */
     AVAILABLE,
     /**
-     * Indicates status is unavailable - reason unknown.
+     * Indicates status is unavailable - reason uknown.
      */
     UNAVAILABLE, UNEQUIPPED, INACCESIBBLE, CONGESTED;
 }

@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.mobicents.protocols.ss7.mtp.Mtp3StatusCause;
 import org.mobicents.protocols.ss7.sccp.SccpProtocolVersion;
-import org.mobicents.protocols.ss7.sccp.impl.congestion.SccpCongestionControl;
 import org.mobicents.protocols.ss7.sccp.impl.mgmt.Mtp3PrimitiveMessage;
 import org.mobicents.protocols.ss7.sccp.impl.mgmt.SccpMgmtMessage;
 import org.mobicents.protocols.ss7.sccp.message.SccpDataMessage;
@@ -81,19 +80,9 @@ public class SccpManagementProxy extends SccpManagement {
         return super.getSccpRoutingControl();
     }
 
-    public SccpCongestionControl getSccpCongestionControl() {
-
-        return super.getSccpCongestionControl();
-    }
-
     public void setSccpRoutingControl(SccpRoutingControl sccpRoutingControl) {
 
         super.setSccpRoutingControl(sccpRoutingControl);
-    }
-
-    public void setSccpCongestionControl(SccpCongestionControl sccpCongestionControl) {
-
-        super.setSccpCongestionControl(sccpCongestionControl);
     }
 
     @Override

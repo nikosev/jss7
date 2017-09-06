@@ -21,6 +21,8 @@
  */
 package org.mobicents.protocols.ss7.oam.common.sccp;
 
+import java.util.Map;
+
 import org.mobicents.protocols.ss7.indicator.AddressIndicator;
 import org.mobicents.protocols.ss7.indicator.NatureOfAddress;
 import org.mobicents.protocols.ss7.indicator.NumberingPlan;
@@ -37,8 +39,6 @@ import org.mobicents.protocols.ss7.sccp.SccpProvider;
 import org.mobicents.protocols.ss7.sccp.parameter.GlobalTitle;
 import org.mobicents.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.mobicents.protocols.ss7.sccp.parameter.SccpAddress;
-
-import java.util.Map;
 
 /**
  * @author Amit Bhayani
@@ -105,9 +105,9 @@ public class SccpRouterJmx implements SccpRouterJmxMBean {
     @Override
     public void addRule(int id, RuleType ruleType, LoadSharingAlgorithm algo, OriginationType originationType,
             SccpAddress pattern, String mask, int pAddressId, int sAddressId, Integer newCallingPartyAddressAddressId,
-            int networkId, SccpAddress patternCallingAddress) throws Exception {
+            int networkId) throws Exception {
         this.wrappedRouter.addRule(id, ruleType, algo, originationType, pattern, mask, pAddressId, sAddressId,
-                newCallingPartyAddressAddressId, networkId, patternCallingAddress);
+                newCallingPartyAddressAddressId, networkId);
     }
 
     /*
@@ -242,10 +242,9 @@ public class SccpRouterJmx implements SccpRouterJmxMBean {
     @Override
     public void modifyRule(int id, RuleType ruleType, LoadSharingAlgorithm algo, OriginationType originationType,
             SccpAddress pattern, String mask, int pAddressId, int sAddressId, Integer newCallingPartyAddressAddressId,
-            int networkId, SccpAddress patternCallingAddress
-                           ) throws Exception {
+            int networkId) throws Exception {
         this.wrappedRouter.modifyRule(id, ruleType, algo, originationType, pattern, mask, pAddressId, sAddressId,
-                newCallingPartyAddressAddressId, networkId, patternCallingAddress);
+                newCallingPartyAddressAddressId, networkId);
     }
 
     /*
@@ -316,10 +315,6 @@ public class SccpRouterJmx implements SccpRouterJmxMBean {
             throw new Exception(String.format("Address Indicator %d indicates that PointCode is present, however PointCode passed is 0", ai));
         }
 
-        if (aiObj.getGlobalTitleIndicator() == null) {
-            throw new Exception(String.format("GlobalTitle type is not recognizes, possible bad AddressIndicator value"));
-        }
-
         NumberingPlan npObj = NumberingPlan.valueOf(np);
         NatureOfAddress naiObj = NatureOfAddress.valueOf(nao);
         //TODO: encoding scheme?
@@ -352,21 +347,14 @@ public class SccpRouterJmx implements SccpRouterJmxMBean {
 
     @Override
     public void addRule(int id, String ruleType, String algo, String originationType, int ai, int pc, int ssn, int tt, int np,
-            int nao, String digits, String mask, int pAddressId, int sAddressId, int newCallingPartyAddressAddressId, int networkId,
-                        int callingai, int callingpc, int callingssn, int callingtt, int callingnp,int callingnao, String callingdigits)
+            int nao, String digits, String mask, int pAddressId, int sAddressId, int newCallingPartyAddressAddressId, int networkId)
             throws Exception {
 
         SccpAddress patternAddress = this.createSccpAddress(ai, pc, ssn, tt, np, nao, digits);
 
-        SccpAddress patternAddressCalling = null;
-        if (callingdigits != null && !callingdigits.isEmpty()) {
-            patternAddressCalling = this.createSccpAddress(callingai, callingpc, callingssn, callingtt, callingnp, callingnao,
-                    callingdigits);
-        }
-
         this.wrappedRouter.addRule(id, RuleType.getInstance(ruleType), LoadSharingAlgorithm.getInstance(algo),
                 OriginationType.getInstance(originationType), patternAddress, mask, pAddressId, sAddressId,
-                newCallingPartyAddressAddressId == -1 ? null : newCallingPartyAddressAddressId, networkId, patternAddressCalling);
+                newCallingPartyAddressAddressId == -1 ? null : newCallingPartyAddressAddressId, networkId);
 
     }
 

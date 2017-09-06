@@ -89,13 +89,6 @@ public interface Dialog extends Serializable {
     void setRemoteAddress(SccpAddress remoteAddress);
 
     /**
-     * Gets ssn dialog value
-     *
-     * @return
-     */
-    int getLocalSsn();
-
-    /**
      * Last sent/received ACN
      *
      * @return the acn
@@ -310,16 +303,5 @@ public interface Dialog extends Serializable {
      * @return This ReentrantLock object should for synchronizing of Dialog using in multithread environment
      */
     ReentrantLock getDialogLock();
-
-    /**
-    *
-    * @return IdleTaskTimeout value in milliseconds
-    */
-   long getIdleTaskTimeout();
-
-    /**
-     * Set IdleTaskTimeout in milliseconds.
-     */
-    void setIdleTaskTimeout(long idleTaskTimeoutMs);
 
 }

@@ -21,6 +21,8 @@
 
 package org.mobicents.protocols.ss7.sccp.impl.parameter;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -43,6 +45,7 @@ public class GlobalTitle0001Impl extends AbstractGlobalTitle implements GlobalTi
     private NatureOfAddress natureOfAddress;
 
     public GlobalTitle0001Impl() {
+        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -81,7 +84,7 @@ public class GlobalTitle0001Impl extends AbstractGlobalTitle implements GlobalTi
             } else {
                 super.encodingScheme = BCDEvenEncodingScheme.INSTANCE;
             }
-            super.digits = this.encodingScheme.decode(in);
+            super.decode(in, factory, sccpProtocolVersion);
         } catch (IOException e) {
             throw new ParseException(e);
         }
@@ -106,13 +109,22 @@ public class GlobalTitle0001Impl extends AbstractGlobalTitle implements GlobalTi
             out.write((byte) b);
 
             // encode digits
-            if(super.digits == null){
-                throw new IllegalStateException();
-            }
-            this.encodingScheme.encode(digits, out);
+            super.encode(out, removeSpc, sccpProtocolVersion);
         } catch (IOException e) {
             throw new ParseException(e);
         }
+    }
+
+    @Override
+    public void decode(final byte[] b, final ParameterFactory factory, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+        this.decode(new ByteArrayInputStream(b), factory, sccpProtocolVersion);
+    }
+
+    @Override
+    public byte[] encode(final boolean removeSpc, final SccpProtocolVersion sccpProtocolVersion) throws ParseException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        this.encode(baos, removeSpc, sccpProtocolVersion);
+        return baos.toByteArray();
     }
 
     @Override

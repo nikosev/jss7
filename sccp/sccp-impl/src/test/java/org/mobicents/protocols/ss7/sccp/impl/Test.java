@@ -5,12 +5,12 @@ import java.io.IOException;
 import org.mobicents.protocols.ss7.indicator.NatureOfAddress;
 import org.mobicents.protocols.ss7.indicator.NumberingPlan;
 import org.mobicents.protocols.ss7.indicator.RoutingIndicator;
-import org.mobicents.protocols.ss7.sccp.NetworkIdState;
 import org.mobicents.protocols.ss7.sccp.RemoteSccpStatus;
 import org.mobicents.protocols.ss7.sccp.SccpListener;
 import org.mobicents.protocols.ss7.sccp.SccpProvider;
 import org.mobicents.protocols.ss7.sccp.SignallingPointStatus;
 import org.mobicents.protocols.ss7.sccp.impl.parameter.BCDEvenEncodingScheme;
+import org.mobicents.protocols.ss7.sccp.impl.parameter.GlobalTitle0010Impl;
 import org.mobicents.protocols.ss7.sccp.impl.parameter.GlobalTitle0100Impl;
 import org.mobicents.protocols.ss7.sccp.impl.parameter.SccpAddressImpl;
 import org.mobicents.protocols.ss7.sccp.message.SccpDataMessage;
@@ -70,27 +70,18 @@ public class Test implements SccpListener {
     public void onNotice(SccpNoticeMessage message) {
     }
 
-    @Override
-    public void onPcState(int dpc, SignallingPointStatus status, Integer restrictedImportanceLevel,
-            RemoteSccpStatus remoteSccpStatus) {
+    public void onCoordRequest(int dpc, int ssn, int multiplicityIndicator) {
     }
 
-    @Override
-    public void onCoordResponse(int ssn, int multiplicityIndicator) {
-        // TODO Auto-generated method stub
-        
+    public void onCoordResponse(int dpc, int ssn, int multiplicityIndicator) {
     }
 
-    @Override
     public void onState(int dpc, int ssn, boolean inService, int multiplicityIndicator) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
-    public void onNetworkIdState(int networkId, NetworkIdState networkIdState) {
-        // TODO Auto-generated method stub
-        
+    public void onPcState(int dpc, SignallingPointStatus status, int restrictedImportanceLevel,
+            RemoteSccpStatus remoteSccpStatus) {
     }
 
 }

@@ -153,17 +153,6 @@ public class SccpMan implements SccpManMBean, Stoppable {
     }
 
     @Override
-    public int getLocalSsn2() {
-        return this.testerHost.getConfigurationData().getSccpConfigurationData().getLocalSsn2();
-    }
-
-    @Override
-    public void setLocalSsn2(int val) {
-        this.testerHost.getConfigurationData().getSccpConfigurationData().setLocalSsn2(val);
-        this.testerHost.markStore();
-    }
-
-    @Override
     public GlobalTitleType getGlobalTitleType() {
         return this.testerHost.getConfigurationData().getSccpConfigurationData().getGlobalTitleType();
     }
@@ -378,11 +367,11 @@ public class SccpMan implements SccpManMBean, Stoppable {
                     0);
             String mask = "K";
             ((RouterImpl) this.router).addRule(1, RuleType.SOLITARY, null, OriginationType.LOCAL, pattern, mask, 1,
-                    -1, null, 0, pattern);
+                    -1, null, 0);
             pattern = parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE, this.createGlobalTitle("*"), 0, 0);
             mask = "R";
             ((RouterImpl) this.router).addRule(2, RuleType.SOLITARY, null, OriginationType.REMOTE, pattern, mask, 2,
-                    -1, null, 0, pattern);
+                    -1, null, 0);
         }
     }
 

@@ -37,8 +37,7 @@ import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement
 /**
  *
 <code>
-CAP V4:
-InitialDPArgExtension {PARAMETERS-BOUND : bound} ::= SEQUENCE {
+CAP V4: InitialDPArgExtension {PARAMETERS-BOUND : bound} ::= SEQUENCE {
   gmscAddress                   [0] ISDN-AddressString OPTIONAL,
   forwardingDestinationNumber   [1] CalledPartyNumber {bound} OPTIONAL,
   ms-Classmark2                 [2] MS-Classmark2 OPTIONAL,
@@ -52,9 +51,7 @@ InitialDPArgExtension {PARAMETERS-BOUND : bound} ::= SEQUENCE {
   lowLayerCompatibility2        [10] LowLayerCompatibility {bound} OPTIONAL,
   ...,
   enhancedDialledServicesAllowed [11] NULL OPTIONAL,
-  uu-Data                        [12] UU-Data OPTIONAL
-  collectInformationAllowed      [13] NULL OPTIONAL,
-  releaseCallArgExtensionAllowed [14] NULL OPTIONAL
+  uu-Data                       [12] UU-Data OPTIONAL
 }
 
 CAP V2: InitialDPArgExtension ::= SEQUENCE {
@@ -102,9 +99,5 @@ public interface InitialDPArgExtension extends Serializable {
     boolean getEnhancedDialledServicesAllowed();
 
     UUData getUUData();
-
-    boolean getCollectInformationAllowed();
-
-    boolean getReleaseCallArgExtensionAllowed();
 
 }

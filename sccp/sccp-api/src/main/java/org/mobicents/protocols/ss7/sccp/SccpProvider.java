@@ -1,6 +1,6 @@
 /*
- * TeleStax, Open Source Cloud Communications  Copyright 2012.
- * and individual contributors
+ * JBoss, Home of Professional Open Source
+ * Copyright 2011, Red Hat, Inc. and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -25,13 +25,10 @@ package org.mobicents.protocols.ss7.sccp;
 import java.io.IOException;
 import java.io.Serializable;
 
-import javolution.util.FastMap;
-
 import org.mobicents.protocols.ss7.sccp.message.MessageFactory;
 import org.mobicents.protocols.ss7.sccp.message.SccpDataMessage;
 import org.mobicents.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.mobicents.protocols.ss7.sccp.parameter.SccpAddress;
-import org.mobicents.ss7.congestion.ExecutorCongestionMonitor;
 
 /**
  *
@@ -55,15 +52,14 @@ public interface SccpProvider extends Serializable {
     ParameterFactory getParameterFactory();
 
     /**
-     * Registers listener for some SSN. This is an equivalent of N-STATE request with User status==UIS (user in service)
+     * Register listener for some adddress.
      *
      * @param listener
      */
     void registerSccpListener(int ssn, SccpListener listener);
 
     /**
-     * Removes listener for some SSN. This is an equivalent of N-STATE request with User status==UOS (user out of service)
-     *
+     * Removes listener
      */
     void deregisterSccpListener(int ssn);
 
@@ -88,25 +84,5 @@ public interface SccpProvider extends Serializable {
      * @return
      */
     int getMaxUserDataLength(SccpAddress calledPartyAddress, SccpAddress callingPartyAddress, int msgNetworkId);
-
-    /**
-     * Request of N-COORD when the originating user is requesting permission to go out-of-service
-     *
-     * @param ssn
-     */
-    void coordRequest(int ssn);
-
-    /**
-     * The collection of netwokIds that are marked as prohibited or congested.
-     *
-     * @return The collection of pairs: netwokId value - NetworkIdState (prohibited / congested state)
-     */
-    FastMap<Integer, NetworkIdState> getNetworkIdStateList();
-
-    /**
-     * @return ExecutorCongestionMonitor list that are responsible for measuring of congestion of the thread Executor that
-     *         processes incoming messages at mtp3 levels
-     */
-    ExecutorCongestionMonitor[] getExecutorCongestionMonitorList();
 
 }

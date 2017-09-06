@@ -75,7 +75,6 @@ import org.mobicents.protocols.ss7.map.api.smstpdu.DataCodingScheme;
 import org.mobicents.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
 import org.mobicents.protocols.ss7.map.api.smstpdu.ProtocolIdentifier;
 import org.mobicents.protocols.ss7.map.api.smstpdu.SmsDeliverTpdu;
-import org.mobicents.protocols.ss7.map.api.smstpdu.SmsStatusReportTpdu;
 import org.mobicents.protocols.ss7.map.api.smstpdu.SmsSubmitTpdu;
 import org.mobicents.protocols.ss7.map.api.smstpdu.SmsTpdu;
 import org.mobicents.protocols.ss7.map.api.smstpdu.TypeOfNumber;
@@ -396,17 +395,6 @@ public class TestSmsClientMan extends TesterBase implements TestSmsClientManMBea
     }
 
     @Override
-    public boolean isStatusReportRequest() {
-        return this.testerHost.getConfigurationData().getTestSmsClientConfigurationData().isStatusReportRequest();
-    }
-
-    @Override
-    public void setStatusReportRequest(boolean val) {
-        this.testerHost.getConfigurationData().getTestSmsClientConfigurationData().setStatusReportRequest(val);
-        this.testerHost.markStore();
-    }
-
-    @Override
     public TypeOfNumberType getTypeOfNumber() {
         return new TypeOfNumberType(this.testerHost.getConfigurationData().getTestSmsClientConfigurationData().getTypeOfNumber().getCode());
     }
@@ -707,9 +695,7 @@ public class TestSmsClientMan extends TesterBase implements TestSmsClientManMBea
             ProtocolIdentifier pi = new ProtocolIdentifierImpl(0);
             ValidityPeriod validityPeriod = new ValidityPeriodImpl(169); // 3
                                                                          // days
-            SmsSubmitTpdu tpdu = new SmsSubmitTpduImpl(false, false, this.testerHost.getConfigurationData()
-                    .getTestSmsClientConfigurationData().isStatusReportRequest(), ++mesRef, destAddress, pi, validityPeriod,
-                    userData);
+            SmsSubmitTpdu tpdu = new SmsSubmitTpduImpl(false, false, false, ++mesRef, destAddress, pi, validityPeriod, userData);
             SmsSignalInfo si = mapProvider.getMAPParameterFactory().createSmsSignalInfo(tpdu, null);
 
             MAPDialogSms curDialog = mapProvider.getMAPServiceSms().createNewDialog(mapAppContext, this.mapMan.createOrigAddress(), null,
@@ -874,68 +860,61 @@ public class TestSmsClientMan extends TesterBase implements TestSmsClientManMBea
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
         String uData;
         switch (mtFSMReaction.intValue()) {
-            case MtFSMReaction.VAL_ERROR_MEMORY_CAPACITY_EXCEEDED:
-            case MtFSMReaction.VAL_ERROR_EQUIPMENT_PROTOCOL_ERROR:
-            case MtFSMReaction.VAL_ERROR_UNKNOWN_SERVICE_CENTRE:
-                SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause;
-                if (this.testerHost.getConfigurationData().getTestSmsClientConfigurationData().getMtFSMReaction().intValue() == MtFSMReaction.VAL_ERROR_MEMORY_CAPACITY_EXCEEDED)
-                    smEnumeratedDeliveryFailureCause = SMEnumeratedDeliveryFailureCause.memoryCapacityExceeded;
-                else if (this.testerHost.getConfigurationData().getTestSmsClientConfigurationData().getMtFSMReaction()
-                        .intValue() == MtFSMReaction.VAL_ERROR_EQUIPMENT_PROTOCOL_ERROR)
-                    smEnumeratedDeliveryFailureCause = SMEnumeratedDeliveryFailureCause.equipmentProtocolError;
-                else
-                    smEnumeratedDeliveryFailureCause = SMEnumeratedDeliveryFailureCause.unknownServiceCentre;
+        case MtFSMReaction.VAL_ERROR_MEMORY_CAPACITY_EXCEEDED:
+        case MtFSMReaction.VAL_ERROR_UNKNOWN_SERVICE_CENTRE:
+            SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause;
+            if (this.testerHost.getConfigurationData().getTestSmsClientConfigurationData().getMtFSMReaction().intValue() == MtFSMReaction.VAL_ERROR_MEMORY_CAPACITY_EXCEEDED)
+                smEnumeratedDeliveryFailureCause = SMEnumeratedDeliveryFailureCause.memoryCapacityExceeded;
+            else
+                smEnumeratedDeliveryFailureCause = SMEnumeratedDeliveryFailureCause.unknownServiceCentre;
                 MAPErrorMessage mapErrorMessage = mapProvider.getMAPErrorMessageFactory()
                         .createMAPErrorMessageSMDeliveryFailure(
                                 curDialog.getApplicationContext().getApplicationContextVersion().getVersion(),
                                 smEnumeratedDeliveryFailureCause, null, null);
-                curDialog.sendErrorComponent(invokeId, mapErrorMessage);
+            curDialog.sendErrorComponent(invokeId, mapErrorMessage);
 
-                this.countErrSent++;
-                uData = this.createErrorData(curDialog.getLocalDialogId(), (int) invokeId, mapErrorMessage);
-                this.testerHost.sendNotif(SOURCE_NAME, "Sent: errSmDelFail", uData, Level.DEBUG);
+            this.countErrSent++;
+            uData = this.createErrorData(curDialog.getLocalDialogId(), (int) invokeId, mapErrorMessage);
+            this.testerHost.sendNotif(SOURCE_NAME, "Sent: errSmDelFail", uData, Level.DEBUG);
+            break;
+        case MtFSMReaction.VAL_ERROR_ABSENT_SUBSCRIBER:
+            mapErrorMessage = null;
+            switch (curDialog.getApplicationContext().getApplicationContextVersion()) {
+            case version1:
+                mapErrorMessage = mapProvider.getMAPErrorMessageFactory().createMAPErrorMessageAbsentSubscriber(null);
                 break;
-            case MtFSMReaction.VAL_ERROR_ABSENT_SUBSCRIBER:
-                mapErrorMessage = null;
-                switch (curDialog.getApplicationContext().getApplicationContextVersion()) {
-                    case version1:
-                        mapErrorMessage = mapProvider.getMAPErrorMessageFactory().createMAPErrorMessageAbsentSubscriber(null);
-                        break;
-                    case version2:
-                        mapErrorMessage = mapProvider.getMAPErrorMessageFactory().createMAPErrorMessageAbsentSubscriber(null,
-                                null);
-                        break;
-                    default:
-                        mapErrorMessage = mapProvider.getMAPErrorMessageFactory().createMAPErrorMessageAbsentSubscriberSM(
-                                AbsentSubscriberDiagnosticSM.IMSIDetached, null, null);
-                        break;
-                }
-
-                curDialog.sendErrorComponent(invokeId, mapErrorMessage);
-
-                this.countErrSent++;
-                uData = this.createErrorData(curDialog.getLocalDialogId(), (int) invokeId, mapErrorMessage);
-                this.testerHost.sendNotif(SOURCE_NAME, "Sent: errAbsSubs", uData, Level.DEBUG);
+            case version2:
+                mapErrorMessage = mapProvider.getMAPErrorMessageFactory().createMAPErrorMessageAbsentSubscriber(null, null);
                 break;
-            case MtFSMReaction.VAL_ERROR_SUBSCRIBER_BUSY_FOR_MT_SMS:
-                mapErrorMessage = mapProvider.getMAPErrorMessageFactory().createMAPErrorMessageSubscriberBusyForMtSms(null,
-                        null);
-                curDialog.sendErrorComponent(invokeId, mapErrorMessage);
-
-                this.countErrSent++;
-                uData = this.createErrorData(curDialog.getLocalDialogId(), (int) invokeId, mapErrorMessage);
-                this.testerHost.sendNotif(SOURCE_NAME, "Sent: errSubBusyForMt", uData, Level.DEBUG);
+            default:
+                mapErrorMessage = mapProvider.getMAPErrorMessageFactory().createMAPErrorMessageAbsentSubscriberSM(AbsentSubscriberDiagnosticSM.IMSIDetached,
+                        null, null);
                 break;
-            case MtFSMReaction.VAL_ERROR_SYSTEM_FAILURE:
-                mapErrorMessage = mapProvider.getMAPErrorMessageFactory().createMAPErrorMessageSystemFailure(
-                        (long) curDialog.getApplicationContext().getApplicationContextVersion().getVersion(),
-                        NetworkResource.vmsc, null, null);
-                curDialog.sendErrorComponent(invokeId, mapErrorMessage);
+            }
 
-                this.countErrSent++;
-                uData = this.createErrorData(curDialog.getLocalDialogId(), (int) invokeId, mapErrorMessage);
-                this.testerHost.sendNotif(SOURCE_NAME, "Sent: errSysFail", uData, Level.DEBUG);
-                break;
+            curDialog.sendErrorComponent(invokeId, mapErrorMessage);
+
+            this.countErrSent++;
+            uData = this.createErrorData(curDialog.getLocalDialogId(), (int) invokeId, mapErrorMessage);
+            this.testerHost.sendNotif(SOURCE_NAME, "Sent: errAbsSubs", uData, Level.DEBUG);
+            break;
+        case MtFSMReaction.VAL_ERROR_SUBSCRIBER_BUSY_FOR_MT_SMS:
+            mapErrorMessage = mapProvider.getMAPErrorMessageFactory().createMAPErrorMessageSubscriberBusyForMtSms(null, null);
+            curDialog.sendErrorComponent(invokeId, mapErrorMessage);
+
+            this.countErrSent++;
+            uData = this.createErrorData(curDialog.getLocalDialogId(), (int) invokeId, mapErrorMessage);
+            this.testerHost.sendNotif(SOURCE_NAME, "Sent: errSubBusyForMt", uData, Level.DEBUG);
+            break;
+        case MtFSMReaction.VAL_ERROR_SYSTEM_FAILURE:
+            mapErrorMessage = mapProvider.getMAPErrorMessageFactory().createMAPErrorMessageSystemFailure(
+                    (long) curDialog.getApplicationContext().getApplicationContextVersion().getVersion(), NetworkResource.vmsc, null, null);
+            curDialog.sendErrorComponent(invokeId, mapErrorMessage);
+
+            this.countErrSent++;
+            uData = this.createErrorData(curDialog.getLocalDialogId(), (int) invokeId, mapErrorMessage);
+            this.testerHost.sendNotif(SOURCE_NAME, "Sent: errSysFail", uData, Level.DEBUG);
+            break;
         }
     }
 
@@ -959,7 +938,6 @@ public class TestSmsClientMan extends TesterBase implements TestSmsClientManMBea
         try {
             String msg = null;
             SmsDeliverTpdu dTpdu = null;
-            SmsStatusReportTpdu srTpdu = null;
             if (si != null) {
                 SmsTpdu tpdu = si.decodeTpdu(false);
                 if (tpdu instanceof SmsDeliverTpdu) {
@@ -987,16 +965,6 @@ public class TestSmsClientMan extends TesterBase implements TestSmsClientManMBea
                         }
                     }
                 }
-                if (tpdu instanceof SmsStatusReportTpdu) {
-                    srTpdu = (SmsStatusReportTpdu) tpdu;
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("[Status=");
-                    sb.append(srTpdu.getStatus().getCode());
-                    sb.append(", msgRef=");
-                    sb.append(srTpdu.getMessageReference());
-                    sb.append("]");
-                    msg = sb.toString();
-                }
             }
 
             if (this.testerHost.getConfigurationData().getTestSmsClientConfigurationData().isOneNotificationFor100Dialogs()) {
@@ -1006,7 +974,7 @@ public class TestSmsClientMan extends TesterBase implements TestSmsClientManMBea
                     this.testerHost.sendNotif(SOURCE_NAME, "Rsvd: Ms messages: " + (countMtFsmReqNot * 100), "", Level.DEBUG);
                 }
             } else {
-                String uData = this.createMtData(curDialog, destImsi, dTpdu, srTpdu, serviceCentreAddr);
+                String uData = this.createMtData(curDialog, destImsi, dTpdu, serviceCentreAddr);
                 this.testerHost.sendNotif(SOURCE_NAME, "Rcvd: mtReq: " + msg, uData, Level.DEBUG);
             }
         } catch (MAPException e) {
@@ -1094,7 +1062,7 @@ public class TestSmsClientMan extends TesterBase implements TestSmsClientManMBea
         }
     }
 
-    private String createMtData(MAPDialogSms dialog, String destImsi, SmsDeliverTpdu dTpdu, SmsStatusReportTpdu srTpdu, AddressString serviceCentreAddr) {
+    private String createMtData(MAPDialogSms dialog, String destImsi, SmsDeliverTpdu dTpdu, AddressString serviceCentreAddr) {
         StringBuilder sb = new StringBuilder();
         sb.append("dialogId=");
         sb.append(dialog.getLocalDialogId());
@@ -1102,14 +1070,8 @@ public class TestSmsClientMan extends TesterBase implements TestSmsClientManMBea
         sb.append(destImsi);
         sb.append(",\"\nserviceCentreAddr=\"");
         sb.append(serviceCentreAddr);
-        if (dTpdu != null) {
-            sb.append(",\"\nsmsDeliverTpdu=");
-            sb.append(dTpdu);
-        }
-        if (srTpdu != null) {
-            sb.append(",\"\nsmsStatusReportTpdu=");
-            sb.append(srTpdu);
-        }
+        sb.append(",\"\nsmsDeliverTpdu=");
+        sb.append(dTpdu);
 
         sb.append(",\nRemoteAddress=");
         sb.append(dialog.getRemoteAddress());
@@ -1167,7 +1129,7 @@ public class TestSmsClientMan extends TesterBase implements TestSmsClientManMBea
             switch (sriReaction.intValue()) {
             case SRIReaction.VAL_RETURN_SUCCESS:
                 li = mapProvider.getMAPParameterFactory().createLocationInfoWithLMSI(networkNodeNumber, null, null, false, null);
-                curDialog.addSendRoutingInfoForSMResponse(invokeId, imsi, li, null, null, null);
+                curDialog.addSendRoutingInfoForSMResponse(invokeId, imsi, li, null, null);
 
                 this.countSriResp++;
                 if (!this.testerHost.getConfigurationData().getTestSmsClientConfigurationData().isOneNotificationFor100Dialogs()) {
@@ -1182,7 +1144,7 @@ public class TestSmsClientMan extends TesterBase implements TestSmsClientManMBea
             case SRIReaction.VAL_RETURN_SUCCESS_WITH_LMSI:
                 LMSI lmsi = mapProvider.getMAPParameterFactory().createLMSI(new byte[] { 11, 12, 13, 14 });
                 li = mapProvider.getMAPParameterFactory().createLocationInfoWithLMSI(networkNodeNumber, lmsi, null, false, null);
-                curDialog.addSendRoutingInfoForSMResponse(invokeId, imsi, li, null, null, null);
+                curDialog.addSendRoutingInfoForSMResponse(invokeId, imsi, li, null, null);
 
                 this.countSriResp++;
                 uData = this.createSriRespData(curDialog.getLocalDialogId(), imsi, li);
@@ -1370,8 +1332,6 @@ public class TestSmsClientMan extends TesterBase implements TestSmsClientManMBea
             }
         }
 
-        this.testerHost.sendNotif(SOURCE_NAME, "Rcvd: rsmdsReq", ind.toString(), Level.DEBUG);
-
         try {
             if (reportSMDeliveryStatusReaction.intValue() == ReportSMDeliveryStatusReaction.VAL_RETURN_SUCCESS) {
                 curDialog.addReportSMDeliveryStatusResponse(invokeId, null, null);
@@ -1390,6 +1350,8 @@ public class TestSmsClientMan extends TesterBase implements TestSmsClientManMBea
 
                 this.needSendClose = true;
             }
+
+            this.testerHost.sendNotif(SOURCE_NAME, "Rcvd: rsmdsReq", ind.toString(), Level.DEBUG);
 
         } catch (MAPException e) {
             this.testerHost.sendNotif(SOURCE_NAME, "Exception when invoking ReportSMDeliveryStatusResponse : " + e.getMessage(), e, Level.ERROR);

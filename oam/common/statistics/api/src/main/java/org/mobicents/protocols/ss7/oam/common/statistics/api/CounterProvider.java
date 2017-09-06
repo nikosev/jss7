@@ -70,13 +70,8 @@ public interface CounterProvider {
      *            been registered
      * @param duration
      *            Duration in minutes (possible values: 5, 10, 15, 20, 30 and 60 minutes)
-     * @param outputFormat
-     *            Output format (possible values: 0, 1, 2)
-     *            0 - CSV
-     *            1 - verbose
-     *            2 - CSV and verbose
      */
-    void createCampaign(String campaignName, String counterSetName, int duration, int outputFormat) throws Exception;
+    void createCampaign(String campaignName, String counterSetName, int duration) throws Exception;
 
     /**
      * creating a short Campaign, duration - interval in seconds (only predefined
@@ -90,13 +85,8 @@ public interface CounterProvider {
      *            been registered
      * @param duration
      *            Duration in minutes (possible values: 5, 10, 15, 20, 30 and 60 seconds)
-     * @param outputFormat
-     *            Output format (possible values: 0, 1, 2)
-     *            0 - CSV
-     *            1 -verbose
-     *            2 - CSV and verbose
      */
-    void createShortCampaign(String campaignName, String counterSetName, int duration, int outputFormat) throws Exception;
+    void createShortCampaign(String campaignName, String counterSetName, int duration) throws Exception;
 
     /**
      * destroying a Campaign

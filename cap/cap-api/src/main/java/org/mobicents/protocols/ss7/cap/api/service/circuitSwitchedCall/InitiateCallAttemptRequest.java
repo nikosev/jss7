@@ -31,7 +31,6 @@ import org.mobicents.protocols.ss7.map.api.service.callhandling.CallReferenceNum
 
 /**
  *
-<code>
 initiateCallAttempt {PARAMETERS-BOUND : bound} OPERATION ::= {
   ARGUMENT InitiateCallAttemptArg {bound}
   RESULT InitiateCallAttemptRes {bound}
@@ -56,7 +55,6 @@ InitiateCallAttemptArg {PARAMETERS-BOUND : bound} ::= SEQUENCE {
 }
 
 CallSegmentID {PARAMETERS-BOUND : bound} ::= INTEGER (1..127)
-</code>
  *
  *
  * @author sergey vetyutnev

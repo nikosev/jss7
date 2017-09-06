@@ -22,12 +22,12 @@
 
 package org.mobicents.protocols.ss7.scheduler;
 
-import org.apache.log4j.Logger;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.log4j.Logger;
 
 /**
  * Implements scheduler with multi-level priority queue.
@@ -41,7 +41,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author oifa.yulian
  */
-public class Scheduler implements SchedulerMBean {
+public class Scheduler {
     // MANAGEMENT QUEUE SHOULD CONTAIN ONLY TASKS THAT ARE NOT TIME DEPENDENT
     public static final Integer MANAGEMENT_QUEUE = 0;
 

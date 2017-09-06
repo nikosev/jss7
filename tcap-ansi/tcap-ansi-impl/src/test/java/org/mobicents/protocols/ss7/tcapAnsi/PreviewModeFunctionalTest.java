@@ -28,9 +28,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javolution.util.FastMap;
-
-import org.mobicents.protocols.ss7.sccp.NetworkIdState;
 import org.mobicents.protocols.ss7.sccp.SccpListener;
 import org.mobicents.protocols.ss7.sccp.SccpManagementEventListener;
 import org.mobicents.protocols.ss7.sccp.SccpProvider;
@@ -49,7 +46,6 @@ import org.mobicents.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCNoticeIndicat
 import org.mobicents.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCPAbortIndication;
 import org.mobicents.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUniIndication;
 import org.mobicents.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortIndication;
-import org.mobicents.ss7.congestion.ExecutorCongestionMonitor;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -562,23 +558,6 @@ public class PreviewModeFunctionalTest {
         public void deregisterManagementEventListener(SccpManagementEventListener listener) {
             // TODO Auto-generated method stub
 
-        }
-
-        @Override
-        public void coordRequest(int ssn) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public FastMap<Integer, NetworkIdState> getNetworkIdStateList() {
-            return new FastMap<Integer, NetworkIdState>();
-        }
-
-        @Override
-        public ExecutorCongestionMonitor[] getExecutorCongestionMonitorList() {
-            // TODO Auto-generated method stub
-            return null;
         }
     }
 

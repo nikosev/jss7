@@ -91,7 +91,6 @@ import org.mobicents.protocols.ss7.map.api.service.supplementary.UnstructuredSSR
 import org.mobicents.protocols.ss7.map.api.service.supplementary.UnstructuredSSResponse;
 import org.mobicents.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
 import org.mobicents.protocols.ss7.map.dialog.MAPUserAbortChoiceImpl;
-import org.mobicents.protocols.ss7.map.primitives.AddressStringImpl;
 import org.mobicents.protocols.ss7.map.primitives.AlertingPatternImpl;
 import org.mobicents.protocols.ss7.tools.simulator.Stoppable;
 import org.mobicents.protocols.ss7.tools.simulator.common.AddressNatureType;
@@ -515,16 +514,6 @@ public class TestUssdClientMan extends TesterBase implements TestUssdClientManMB
             if (manualMode)
                 currentDialog = curDialog;
             invokeId = null;
-
-            boolean eriExtTest = false;
-//            eriExtTest = true;
-            if (eriExtTest) {
-                AddressString eriMsisdn = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
-                        "99000000000001");
-                AddressString eriVlrNo = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
-                        "99000000000002");
-                curDialog.addEricssonData(eriMsisdn, eriVlrNo);
-            }
 
             ISDNAddressString msisdn = null;
             if (this.testerHost.getConfigurationData().getTestUssdClientConfigurationData().getMsisdnAddress() != null
@@ -1062,7 +1051,7 @@ public class TestUssdClientMan extends TesterBase implements TestUssdClientManMB
             case SRIReaction.VAL_RETURN_SUCCESS:
             case SRIReaction.VAL_RETURN_SUCCESS_WITH_LMSI:
                 li = mapProvider.getMAPParameterFactory().createLocationInfoWithLMSI(networkNodeNumber, null, null, false, null);
-                curDialog.addSendRoutingInfoForSMResponse(invokeId, imsi, li, null, null, null);
+                curDialog.addSendRoutingInfoForSMResponse(invokeId, imsi, li, null, null);
 
                 this.countSriResp++;
                 if (!this.testerHost.getConfigurationData().getTestUssdClientConfigurationData().isOneNotificationFor100Dialogs()) {

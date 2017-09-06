@@ -153,11 +153,6 @@ public class M3uaManagementJmx implements M3uaManagementJmxMBean, M3UAManagement
         this.wrappedM3UAManagement.setMaxSequenceNumber(maxSequenceNumber);
     }
 
-    @Override
-    public boolean isSctpLibNettySupport() {
-        return this.wrappedM3UAManagement.isSctpLibNettySupport();
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -210,7 +205,7 @@ public class M3uaManagementJmx implements M3uaManagementJmxMBean, M3UAManagement
     }
 
     @Override
-    public As createAppServer(String asName, String functionality, String exchangeType, String ipspType,
+    public As createAppServer(String asName, Functionality functionality, ExchangeType exchangeType, IPSPType ipspType,
             String rc, int trafficMode, int minAspActive, String na) throws Exception {
 
         NetworkAppearance networkAppearance = null;
@@ -226,8 +221,7 @@ public class M3uaManagementJmx implements M3uaManagementJmxMBean, M3UAManagement
         }
 
         TrafficModeType trafficModeType = parameterFactory.createTrafficModeType(trafficMode);
-        As as = this.wrappedM3UAManagement.createAs(asName, Functionality.valueOf(functionality.toUpperCase()),
-                ExchangeType.valueOf(exchangeType.toUpperCase()), IPSPType.valueOf(ipspType.toUpperCase()), routingContext,
+        As as = this.wrappedM3UAManagement.createAs(asName, functionality, exchangeType, ipspType, routingContext,
                 trafficModeType, minAspActive, networkAppearance);
 
         return null;
@@ -270,26 +264,6 @@ public class M3uaManagementJmx implements M3uaManagementJmxMBean, M3UAManagement
     @Override
     public void setHeartbeatTime(int timeBetweenHeartbeat) throws Exception {
         this.wrappedM3UAManagement.setHeartbeatTime(timeBetweenHeartbeat);
-    }
-
-    @Override
-    public boolean isUseLsbForLinksetSelection() {
-        return this.wrappedM3UAManagement.isUseLsbForLinksetSelection();
-    }
-
-    @Override
-    public void setUseLsbForLinksetSelection(boolean useLsbForLinksetSelection) throws Exception {
-        this.wrappedM3UAManagement.setUseLsbForLinksetSelection(useLsbForLinksetSelection);
-    }
-
-    @Override
-    public int getDeliveryMessageThreadCount() {
-        return this.wrappedM3UAManagement.getDeliveryMessageThreadCount();
-    }
-
-    @Override
-    public String getRoutingLabelFormatStr() {
-        return this.wrappedM3UAManagement.getRoutingLabelFormatStr();
     }
 
     @Override

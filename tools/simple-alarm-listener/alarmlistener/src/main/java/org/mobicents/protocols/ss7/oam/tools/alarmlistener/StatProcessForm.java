@@ -432,11 +432,10 @@ public class StatProcessForm extends JDialog {
 
         String s = "OK";
         try {
-            //TODO: extend GUI for outputFormat field, now is hardcoded to verbose
             if (this.cbShortCampaign.isSelected())
-                this.statHost.createShortCampaign(campaignName, counterSetName, duration, 1);
+                this.statHost.createShortCampaign(campaignName, counterSetName, duration);
             else
-                this.statHost.createCampaign(campaignName, counterSetName, duration, 1);
+                this.statHost.createCampaign(campaignName, counterSetName, duration);
         } catch (Exception e) {
             s = e.toString();
         }

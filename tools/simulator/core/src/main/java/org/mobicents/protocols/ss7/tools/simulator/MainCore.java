@@ -49,6 +49,7 @@ import org.mobicents.protocols.ss7.tools.simulator.level3.CapManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.level3.CapManStandardMBean;
 import org.mobicents.protocols.ss7.tools.simulator.level3.MapManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.level3.MapManStandardMBean;
+import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
 import org.mobicents.protocols.ss7.tools.simulator.management.TesterHost;
 import org.mobicents.protocols.ss7.tools.simulator.management.TesterHostMBean;
 import org.mobicents.protocols.ss7.tools.simulator.management.TesterHostStandardMBean;
@@ -72,17 +73,13 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdClientManM
 import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdClientStandardManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdServerManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdServerStandardManMBean;
-import org.mobicents.protocols.ss7.tools.simulator.tests.lcs.TestMapLcsClientStandardManMBean;
-import org.mobicents.protocols.ss7.tools.simulator.tests.lcs.TestMapLcsClientManMBean;
-import org.mobicents.protocols.ss7.tools.simulator.tests.lcs.TestMapLcsServerStandardManMBean;
-import org.mobicents.protocols.ss7.tools.simulator.tests.lcs.TestMapLcsServerManMBean;
 
 import com.sun.jdmk.comm.HtmlAdaptorServer;
 
 /**
- *
  * @author sergey vetyutnev
  * @author amit bhayani
+ * @author Kristoffer Jensen
  */
 public class MainCore {
 
@@ -187,7 +184,32 @@ public class MainCore {
 
         MainCore main = new MainCore();
         main.start(appName, httpPort, rmiPort[0], rmiPort[1]);
+    }
 
+    private String findSimulatorHome() {
+        String sim_home = System.getProperty(AttackTesterHost.SIMULATOR_HOME_VAR);
+        if (sim_home != null)
+            sim_home += File.separator + "data";
+        return sim_home;
+    }
+
+    public void startAttackSimulation(boolean simpleSimulation, String simpleAttackGoal, int numberOfSubscribers) throws Throwable {
+        System.out.println("Application has been loaded...");
+        System.out.println("Loading simulation hosts...");
+
+        AttackSimulationOrganizer attackSimulationOrganizer;
+        if(simpleSimulation) {
+            attackSimulationOrganizer = new AttackSimulationOrganizer(this.findSimulatorHome(), simpleSimulation, simpleAttackGoal, 1);
+        } else {
+            attackSimulationOrganizer = new AttackSimulationOrganizer(this.findSimulatorHome(), simpleSimulation, simpleAttackGoal, numberOfSubscribers);
+        }
+
+        System.out.println("Simulation hosts loaded, starting simulation...");
+        attackSimulationOrganizer.start();
+
+        System.out.println("Terminating...");
+        System.out.println("Unload complete, shutting down...");
+        System.exit(0);
     }
 
     private static void parseRmi(int[] rmiPort, String s1) {
@@ -231,9 +253,6 @@ public class MainCore {
         ObjectName nameAtiServerManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestAtiServerMan");
         ObjectName nameCheckImeiClientManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestCheckImeiClientMan");
         ObjectName nameCheckImeiServerManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestCheckImeiServerMan");
-        ObjectName nameMapLcsClientManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestMapLcsClientMan");
-        ObjectName nameMapLcsServerManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestMapLcsServerMan");
-
 
         // HtmlAdaptorServer
         HtmlAdaptorServer adapter = null;
@@ -309,15 +328,6 @@ public class MainCore {
             TestCheckImeiServerStandardManMBean checkImeiServerManMBean = new TestCheckImeiServerStandardManMBean(host.getTestCheckImeiServerMan(),
                     TestCheckImeiServerManMBean.class);
             mbs.registerMBean(checkImeiServerManMBean, nameCheckImeiServerManMan);
-
-            TestMapLcsClientStandardManMBean mapLcsClientManMBean = new TestMapLcsClientStandardManMBean(host.getTestMapLcsClientMan(),
-                    TestMapLcsClientManMBean.class);
-            mbs.registerMBean(mapLcsClientManMBean, nameMapLcsClientManMan);
-
-            TestMapLcsServerStandardManMBean mapLcsServerManMBean = new TestMapLcsServerStandardManMBean(host.getTestMapLcsServerMan(),
-                    TestMapLcsServerManMBean.class);
-            mbs.registerMBean(mapLcsServerManMBean, nameMapLcsServerManMan);
-
 
             System.out.println("All beans have been loaded...");
 

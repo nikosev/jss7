@@ -1,6 +1,6 @@
 /*
- * TeleStax, Open Source Cloud Communications  Copyright 2012.
- * and individual contributors
+ * JBoss, Home of Professional Open Source
+ * Copyright 2011, Red Hat, Inc. and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -22,8 +22,6 @@
 
 package org.mobicents.protocols.ss7.m3ua.impl.message;
 
-import io.netty.buffer.ByteBuf;
-
 import java.nio.ByteBuffer;
 
 import javolution.text.TextBuilder;
@@ -36,7 +34,6 @@ import org.mobicents.protocols.ss7.m3ua.parameter.Parameter;
 /**
  * @author amit bhayani
  * @author kulikov
- * @author sergey vetyutnev
  */
 public abstract class M3UAMessageImpl implements M3UAMessage {
     // header part
@@ -62,44 +59,47 @@ public abstract class M3UAMessageImpl implements M3UAMessage {
 
     protected abstract void encodeParams(ByteBuffer buffer);
 
-    public void encode(ByteBuf byteBuf) {
-        byteBuf.writeByte(1);
-        byteBuf.writeByte(0);
-        byteBuf.writeByte(messageClass);
-        byteBuf.writeByte(messageType);
+    public void encode(ByteBuffer buffer) {
 
-        ByteBuffer buffer = ByteBuffer.allocate(4096);
+        initialPosition = buffer.position();
+
+        buffer.position(initialPosition + 8);
+
         encodeParams(buffer);
-        int length = buffer.position();
-        byte[] data = new byte[length];
-        buffer.flip();
-        buffer.get(data);
 
-        byteBuf.writeInt(length + 8);
-        byteBuf.writeBytes(data);
+        int length = buffer.position() - initialPosition;
+        // buffer.rewind();
+
+        buffer.put(initialPosition++, (byte) 1);
+        buffer.put(initialPosition++, (byte) 0);
+        buffer.put(initialPosition++, (byte) messageClass);
+        buffer.put(initialPosition++, (byte) messageType);
+        buffer.putInt(initialPosition++, length);
+
+        // buffer.position(length);
     }
 
-    protected void decode(ByteBuf data) {
-        while (data.readableBytes() >= 4) {
-            short tag = (short) ((data.readUnsignedByte() << 8) | (data.readUnsignedByte()));
-            short len = (short) ((data.readUnsignedByte() << 8) | (data.readUnsignedByte()));
+    protected void decode(byte[] data) {
+        this.decode(data, 0);
+    }
 
-            if (data.readableBytes() < len - 4) {
-                return;
-            }
+    protected void decode(byte[] data, int initialPos) {
+        int pos = initialPos;
+        while (pos < data.length) {
+            short tag = (short) ((data[pos] & 0xff) << 8 | (data[pos + 1] & 0xff));
+            short len = (short) ((data[pos + 2] & 0xff) << 8 | (data[pos + 3] & 0xff));
 
             byte[] value = new byte[len - 4];
-            data.readBytes(value);
+
+            System.arraycopy(data, pos + 4, value, 0, value.length);
+            pos += len;
             parameters.put(tag, factory.createParameter(tag, value));
 
             // The Parameter Length does not include any padding octets. We have
             // to consider padding here
-            int padding = 4 - (len % 4);
+            int padding = 4 - (pos % 4);
             if (padding < 4) {
-                if (data.readableBytes() < padding)
-                    return;
-                else
-                    data.skipBytes(padding);
+                pos += padding;
             }
         }
     }

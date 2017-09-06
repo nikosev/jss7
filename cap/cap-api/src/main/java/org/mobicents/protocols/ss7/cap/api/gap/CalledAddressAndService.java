@@ -28,15 +28,9 @@ import org.mobicents.protocols.ss7.cap.api.isup.Digits;
 
 /**
  *
-<code>
-calledAddressAndService [29] SEQUENCE {
-  calledAddressValue  [0] Digits {bound},
-  serviceKey          [1] ServiceKey,
-  ...
-},
-
-ServiceKey::= Integer4
-</code>
+ calledAddressAndService [29] SEQUENCE { calledAddressValue [0] Digits {bound}, serviceKey [1] ServiceKey, ... },
+ *
+ * ServiceKey::= Integer4
  *
  *
  * @author sergey vetyutnev

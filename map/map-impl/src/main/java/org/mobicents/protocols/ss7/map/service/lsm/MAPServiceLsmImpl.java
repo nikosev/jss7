@@ -168,10 +168,10 @@ public class MAPServiceLsmImpl extends MAPServiceBaseImpl implements MAPServiceL
         // BEGIN indication primitive but is not acceptable from a load
         // control point of view, the MAP PM
         // shall ignore this dialogue request. The MAP-user is not informed.
-//        if (compType == ComponentType.Invoke && this.mapProviderImpl.isCongested()) {
-//            // we reject all lms services when congestion
-//            return;
-//        }
+        if (compType == ComponentType.Invoke && this.mapProviderImpl.isCongested()) {
+            // we reject all lms services when congestion
+            return;
+        }
 
         MAPDialogLsmImpl mAPDialogLsmImpl = (MAPDialogLsmImpl) mapDialog;
 
@@ -186,23 +186,21 @@ public class MAPServiceLsmImpl extends MAPServiceBaseImpl implements MAPServiceL
                 if (compType == ComponentType.Invoke) {
                     this.provideSubscriberLocationReq(parameter, mAPDialogLsmImpl, invokeId);
                 } else {
-                    this.provideSubscriberLocationRes(parameter, mAPDialogLsmImpl, invokeId,
-                            compType == ComponentType.ReturnResult);
+                    this.provideSubscriberLocationRes(parameter, mAPDialogLsmImpl, invokeId);
                 }
                 break;
             case MAPOperationCode.subscriberLocationReport:
                 if (compType == ComponentType.Invoke) {
                     this.subscriberLocationReportReq(parameter, mAPDialogLsmImpl, invokeId);
                 } else {
-                    this.subscriberLocationReportRes(parameter, mAPDialogLsmImpl, invokeId,
-                            compType == ComponentType.ReturnResult);
+                    this.subscriberLocationReportRes(parameter, mAPDialogLsmImpl, invokeId);
                 }
                 break;
             case MAPOperationCode.sendRoutingInfoForLCS:
                 if (compType == ComponentType.Invoke) {
                     this.sendRoutingInfoForLCSReq(parameter, mAPDialogLsmImpl, invokeId);
                 } else {
-                    this.sendRoutingInfoForLCSRes(parameter, mAPDialogLsmImpl, invokeId, compType == ComponentType.ReturnResult);
+                    this.sendRoutingInfoForLCSRes(parameter, mAPDialogLsmImpl, invokeId);
                 }
                 break;
             default:
@@ -238,8 +236,8 @@ public class MAPServiceLsmImpl extends MAPServiceBaseImpl implements MAPServiceL
 
     }
 
-    private void provideSubscriberLocationRes(Parameter param, MAPDialogLsmImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
+    private void provideSubscriberLocationRes(Parameter param, MAPDialogLsmImpl mapDialogImpl, Long invokeId)
+            throws MAPParsingComponentException {
         if (param == null) {
             throw new MAPParsingComponentException(
                     "Error while decoding provideSubscriberLocationRes: Parameter is mandatory but not found",
@@ -257,7 +255,6 @@ public class MAPServiceLsmImpl extends MAPServiceBaseImpl implements MAPServiceL
 
         provideSubsLoctResInd.setInvokeId(invokeId);
         provideSubsLoctResInd.setMAPDialog(mapDialogImpl);
-        provideSubsLoctResInd.setReturnResultNotLast(returnResultNotLast);
 
         for (MAPServiceListener serLis : this.serviceListeners) {
             serLis.onMAPMessage(provideSubsLoctResInd);
@@ -292,8 +289,8 @@ public class MAPServiceLsmImpl extends MAPServiceBaseImpl implements MAPServiceL
         }
     }
 
-    private void subscriberLocationReportRes(Parameter parameter, MAPDialogLsmImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
+    private void subscriberLocationReportRes(Parameter parameter, MAPDialogLsmImpl mapDialogImpl, Long invokeId)
+            throws MAPParsingComponentException {
         if (parameter == null) {
             throw new MAPParsingComponentException(
                     "Error while decoding subscriberLocationReport: Parameter is mandatory but not found",
@@ -311,7 +308,6 @@ public class MAPServiceLsmImpl extends MAPServiceBaseImpl implements MAPServiceL
 
         resInd.setInvokeId(invokeId);
         resInd.setMAPDialog(mapDialogImpl);
-        resInd.setReturnResultNotLast(returnResultNotLast);
 
         for (MAPServiceListener serLis : this.serviceListeners) {
             serLis.onMAPMessage(resInd);
@@ -345,8 +341,8 @@ public class MAPServiceLsmImpl extends MAPServiceBaseImpl implements MAPServiceL
         }
     }
 
-    private void sendRoutingInfoForLCSRes(Parameter parameter, MAPDialogLsmImpl mapDialogImpl, Long invokeId,
-            boolean returnResultNotLast) throws MAPParsingComponentException {
+    private void sendRoutingInfoForLCSRes(Parameter parameter, MAPDialogLsmImpl mapDialogImpl, Long invokeId)
+            throws MAPParsingComponentException {
         if (parameter == null) {
             throw new MAPParsingComponentException(
                     "Error while decoding sendRoutingInfoForLCS: Parameter is mandatory but not found",
@@ -364,7 +360,6 @@ public class MAPServiceLsmImpl extends MAPServiceBaseImpl implements MAPServiceL
 
         resInd.setInvokeId(invokeId);
         resInd.setMAPDialog(mapDialogImpl);
-        resInd.setReturnResultNotLast(returnResultNotLast);
 
         for (MAPServiceListener serLis : this.serviceListeners) {
             serLis.onMAPMessage(resInd);

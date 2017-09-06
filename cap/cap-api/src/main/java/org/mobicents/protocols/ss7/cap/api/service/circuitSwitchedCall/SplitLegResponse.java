@@ -24,9 +24,8 @@ package org.mobicents.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
 /**
  *
-<code>
-RETURN RESULT TRUE
-</code>
+ RETURN RESULT TRUE
+ *
  *
  * @author sergey vetyutnev
  *

@@ -387,5 +387,4 @@ public interface ISUPParameterFactory {
     UserTeleserviceInformation createUserTeleserviceInformation();
     UserToUserIndicators createUserToUserIndicators();
     UserToUserInformation createUserToUserInformation();
-    RedirectForwardInformation createRedirectForwardInformation();
 }

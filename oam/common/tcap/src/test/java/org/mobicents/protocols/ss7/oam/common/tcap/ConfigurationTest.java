@@ -60,15 +60,15 @@ public class ConfigurationTest {
         CounterMediator cm = new CounterMediatorProxy();
         counterProvider.registerCounterMediator(cm);
 
-        counterProvider.createCampaign("camp1", "counterSet1", 5, 1);
-        counterProvider.createCampaign("camp2", "counterSet2", 60, 1);
+        counterProvider.createCampaign("camp1", "counterSet1", 5);
+        counterProvider.createCampaign("camp2", "counterSet2", 60);
         try {
-            counterProvider.createCampaign("camp1", "counterSet3", 60, 1);
+            counterProvider.createCampaign("camp1", "counterSet3", 60);
             fail("Same campaignName must bring Exception");
         } catch (Exception e) {
         }
         try {
-            counterProvider.createCampaign("camp3", "counterSet1", 59, 1);
+            counterProvider.createCampaign("camp3", "counterSet1", 59);
             fail("Wrong duration must bring Exception");
         } catch (Exception e) {
         }

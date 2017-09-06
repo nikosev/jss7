@@ -4,18 +4,11 @@
 	<parent>
 		<groupId>org.mobicents.protocols.ss7.management</groupId>
 		<artifactId>management</artifactId>
-		<version>8.0.0-SNAPSHOT</version>
+		<version>7.0.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>shell-transport</artifactId>
 	<name>Restcomm jSS7 :: Management :: ${project.artifactId}</name>
-
-	<properties>
-		<cli.name>Restcomm jSS7 CLI</cli.name>
-		<cli.vendor>TeleStax</cli.vendor>
-		<cli.version>${project.version}</cli.version>
-		<cli.prefix>restcomm</cli.prefix>
-	</properties>
 
 	<dependencies>
 		<dependency>
@@ -40,8 +33,6 @@
 			</resource>
 		</resources>
 	</build>
-
-<!--
 	<profiles>
 		<profile>
 			<id>restcomm</id>
@@ -56,6 +47,7 @@
 			</properties>
 		</profile>
 		
+<!--
 		<profile>
 			<id>telscale</id>
 			<activation>
@@ -68,7 +60,7 @@
 				<cli.prefix>telscale</cli.prefix>
 			</properties>
 		</profile>
-	</profiles>
 -->
 
+	</profiles>
 </project>

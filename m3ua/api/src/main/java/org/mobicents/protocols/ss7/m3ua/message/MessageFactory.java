@@ -1,6 +1,6 @@
 /*
- * TeleStax, Open Source Cloud Communications  Copyright 2012.
- * and individual contributors
+ * JBoss, Home of Professional Open Source
+ * Copyright 2011, Red Hat, Inc. and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -22,7 +22,7 @@
 
 package org.mobicents.protocols.ss7.m3ua.message;
 
-import io.netty.buffer.ByteBuf;
+import java.nio.ByteBuffer;
 
 /**
  * Constructs M3UA message.
@@ -40,6 +40,8 @@ public interface MessageFactory {
      */
     M3UAMessage createMessage(int messageClass, int messageType);
 
-    M3UAMessage createMessage(ByteBuf buffer);
+    M3UAMessage createSctpMessage(byte[] buffer);
+
+    M3UAMessage createMessage(ByteBuffer buffer);
 
 }

@@ -43,7 +43,7 @@ public class BCDEvenEncodingScheme extends DefaultEncodingScheme {
 
     @Override
     public EncodingSchemeType getType() {
-        return EncodingSchemeType.BCD_EVEN;
+        return EncodingSchemeType.BCD_ODD;
     }
 
     @Override

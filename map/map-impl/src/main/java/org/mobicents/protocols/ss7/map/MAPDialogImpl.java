@@ -33,6 +33,7 @@ import org.mobicents.protocols.ss7.map.api.dialog.MAPUserAbortChoice;
 import org.mobicents.protocols.ss7.map.api.dialog.Reason;
 import org.mobicents.protocols.ss7.map.api.errors.MAPErrorMessage;
 import org.mobicents.protocols.ss7.map.api.primitives.AddressString;
+import org.mobicents.protocols.ss7.map.api.primitives.IMSI;
 import org.mobicents.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.mobicents.protocols.ss7.map.errors.MAPErrorMessageImpl;
 import org.mobicents.protocols.ss7.sccp.parameter.SccpAddress;
@@ -85,7 +86,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
     // private Set<Long> incomingInvokeList = new HashSet<Long>();
 
     protected boolean eriStyle;
-    protected AddressString eriMsisdn;
+    protected IMSI eriImsi;
     protected AddressString eriVlrNo;
 
     private boolean returnMessageOnError = false;
@@ -350,7 +351,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
                     this.setState(MAPDialogState.INITIAL_SENT);
 
                     this.mapProviderImpl.fireTCBegin(this.getTcapDialog(), acn, destReference, origReference,
-                            this.extContainer, this.eriStyle, this.eriMsisdn, this.eriVlrNo, this.getReturnMessageOnError());
+                            this.extContainer, this.eriStyle, this.eriImsi, this.eriVlrNo, this.getReturnMessageOnError());
                     this.extContainer = null;
                     break;
 
@@ -580,7 +581,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
                             .createApplicationContextName(this.appCntx.getOID());
 
                     TCBeginRequest tb = this.mapProviderImpl.encodeTCBegin(this.getTcapDialog(), acn, destReference,
-                            origReference, this.extContainer, this.eriStyle, this.eriMsisdn, this.eriVlrNo);
+                            origReference, this.extContainer, this.eriStyle, this.eriImsi, this.eriVlrNo);
                     return tcapDialog.getDataLength(tb);
 
                 case Active:
@@ -644,21 +645,13 @@ public abstract class MAPDialogImpl implements MAPDialog {
         return sb.toString();
     }
 
-    public void addEricssonData(AddressString eriMsisdn, AddressString vlrNo) {
+    public void addEricssonData(IMSI imsi, AddressString vlrNo) {
         this.eriStyle = true;
-        this.eriMsisdn = eriMsisdn;
+        this.eriImsi = imsi;
         this.eriVlrNo = vlrNo;
     }
 
     protected enum DelayedAreaState {
         No, Continue, End, PrearrangedEnd;
-    }
-
-    public long getIdleTaskTimeout() {
-        return tcapDialog.getIdleTaskTimeout();
-    }
-
-    public void setIdleTaskTimeout(long idleTaskTimeoutMs) {
-        tcapDialog.setIdleTaskTimeout(idleTaskTimeoutMs);
     }
 }

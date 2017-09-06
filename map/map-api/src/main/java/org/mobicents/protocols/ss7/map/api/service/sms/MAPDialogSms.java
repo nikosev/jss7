@@ -132,14 +132,11 @@ public interface MAPDialogSms extends MAPDialog {
      */
     Long addSendRoutingInfoForSMRequest(ISDNAddressString msisdn, boolean sm_RP_PRI, AddressString serviceCentreAddress,
             MAPExtensionContainer extensionContainer, boolean gprsSupportIndicator, SM_RP_MTI sM_RP_MTI, SM_RP_SMEA sM_RP_SMEA,
-            SMDeliveryNotIntended smDeliveryNotIntended, boolean ipSmGwGuidanceIndicator, IMSI imsi, boolean t4TriggerIndicator,
-            boolean singleAttemptDelivery, TeleserviceCode teleservice) throws MAPException;
+            TeleserviceCode teleservice) throws MAPException;
 
     Long addSendRoutingInfoForSMRequest(int customInvokeTimeout, ISDNAddressString msisdn, boolean sm_RP_PRI,
             AddressString serviceCentreAddress, MAPExtensionContainer extensionContainer, boolean gprsSupportIndicator,
-            SM_RP_MTI sM_RP_MTI, SM_RP_SMEA sM_RP_SMEA, SMDeliveryNotIntended smDeliveryNotIntended,
-            boolean ipSmGwGuidanceIndicator, IMSI imsi, boolean t4TriggerIndicator, boolean singleAttemptDelivery,
-            TeleserviceCode teleservice) throws MAPException;
+            SM_RP_MTI sM_RP_MTI, SM_RP_SMEA sM_RP_SMEA, TeleserviceCode teleservice) throws MAPException;
 
     /**
      * Sending MAP-SEND-ROUTING-INFO-FOR-SM response
@@ -151,7 +148,7 @@ public interface MAPDialogSms extends MAPDialog {
      * @throws MAPException
      */
     void addSendRoutingInfoForSMResponse(long invokeId, IMSI imsi, LocationInfoWithLMSI locationInfoWithLMSI,
-            MAPExtensionContainer extensionContainer, Boolean mwdSet, IpSmGwGuidance ipSmGwGuidance) throws MAPException;
+            MAPExtensionContainer extensionContainer, Boolean mwdSet) throws MAPException;
 
     /**
      * Sending MAP-SEND-ROUTING-INFO-FOR-SM request
@@ -159,7 +156,7 @@ public interface MAPDialogSms extends MAPDialog {
      * @param msisdn mandatory
      * @param serviceCentreAddress mandatory
      * @param sMDeliveryOutcome mandatory
-     * @param absentSubscriberDiagnosticSM mandatory
+     * @param sbsentSubscriberDiagnosticSM mandatory
      * @param extensionContainer optional
      * @param gprsSupportIndicator optional
      * @param deliveryOutcomeIndicator optional

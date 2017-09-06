@@ -19,13 +19,11 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.mobicents.ss7.management.console;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +39,7 @@ import org.jboss.security.SecurityContext;
 import org.jboss.security.SecurityContextFactory;
 import org.jboss.security.audit.AuditEvent;
 import org.jboss.security.audit.AuditLevel;
+import org.jboss.security.plugins.JaasSecurityManager;
 import org.mobicents.protocols.ss7.scheduler.Scheduler;
 import org.mobicents.protocols.ss7.scheduler.Task;
 import org.mobicents.ss7.management.transceiver.ChannelProvider;
@@ -55,7 +54,7 @@ import org.mobicents.ss7.management.transceiver.ShellServerChannel;
  * @author amit bhayani
  *
  */
-public abstract class ShellServer extends Task implements ShellServerMBean {
+public class ShellServer extends Task {
     Logger logger = Logger.getLogger(ShellServer.class);
 
     public static final String CONNECTED_MESSAGE = "Connected to %s %s %s";
@@ -85,6 +84,7 @@ public abstract class ShellServer extends Task implements ShellServerMBean {
 
     private int port;
 
+    private org.jboss.security.plugins.JaasSecurityManager jaasSecurityManager = null;
     private String securityDomain = null;
     private String userName = null;
     private String password = null;
@@ -98,22 +98,18 @@ public abstract class ShellServer extends Task implements ShellServerMBean {
         this.shellExecutors.addAll(shellExecutors);
     }
 
-    @Override
     public String getAddress() {
         return address;
     }
 
-    @Override
     public void setAddress(String address) {
         this.address = address;
     }
 
-    @Override
     public int getPort() {
         return port;
     }
 
-    @Override
     public void setPort(int port) {
         this.port = port;
     }
@@ -121,7 +117,6 @@ public abstract class ShellServer extends Task implements ShellServerMBean {
     /**
      * @return the securityDomain
      */
-    @Override
     public String getSecurityDomain() {
         return securityDomain;
     }
@@ -129,7 +124,6 @@ public abstract class ShellServer extends Task implements ShellServerMBean {
     /**
      * @param securityDomain the securityDomain to set
      */
-    @Override
     public void setSecurityDomain(String securityDomain) {
         this.securityDomain = securityDomain;
     }
@@ -154,20 +148,9 @@ public abstract class ShellServer extends Task implements ShellServerMBean {
 
         if (this.securityDomain != null) {
             InitialContext initialContext = new InitialContext();
-
-            startSecurityManager(initialContext, securityDomain);
+            this.jaasSecurityManager = (JaasSecurityManager) initialContext.lookup(this.securityDomain);
         }
     }
-
-    protected abstract void startSecurityManager(InitialContext initialContext, String securityDomain) throws NamingException;
-
-    protected abstract void putPrincipal(Map map, Principal principal);
-
-    protected abstract boolean isAuthManagementLoaded();
-
-    protected abstract boolean isValid(Principal principal, Object credential);
-
-    protected abstract String getLocalSecurityDomain();
 
     public void stop() {
         this.started = false;
@@ -189,7 +172,6 @@ public abstract class ShellServer extends Task implements ShellServerMBean {
         this.logger.info("Stopped ShellExecutor service");
     }
 
-    @Override
     public int getQueueNumber() {
         return scheduler.MANAGEMENT_QUEUE;
     }
@@ -219,7 +201,7 @@ public abstract class ShellServer extends Task implements ShellServerMBean {
                             if (this.securityDomain != null) {
                                 Map map = new HashMap();
                                 map.put(AUDIT_MESSAGE, "logout success");
-                                putPrincipal(map, principal);
+                                map.put("principal", this.jaasSecurityManager.getPrincipal(principal));
                                 this.securityContext.getAuditManager().audit(new AuditEvent(AuditLevel.SUCCESS, map));
                             }
 
@@ -235,31 +217,26 @@ public abstract class ShellServer extends Task implements ShellServerMBean {
                             this.password = rxMessage;
                             this.txMessage = "";
 
-                            if (!isAuthManagementLoaded()) {
-                                logger.error("Cant authenticate because AuthenticationManagement is null!");
-
+                            this.principal = new SimplePrincipal(this.userName);
+                            boolean isValid = this.jaasSecurityManager.isValid(principal, this.password);
+                            if (!isValid) {
+                                chan.send(messageFactory.createMessage(CONNECTED_AUTHENTICATION_FAILED));
+                                logger.warn(String.format("Authentication to CLI fialed for username=%s", this.userName));
+                                this.txMessage = "Bye";
                             } else {
-                                this.principal = new SimplePrincipal(this.userName);
-                                boolean isValid = this.isValid(principal, this.password);
-                                if (!isValid) {
-                                    chan.send(messageFactory.createMessage(CONNECTED_AUTHENTICATION_FAILED));
-                                    logger.warn(String.format("Authentication to CLI failed for username=%s", this.userName));
-                                    this.txMessage = "Bye";
-                                } else {
 
-                                    // Audit Stuff
-                                    this.securityContext = SecurityContextFactory.createSecurityContext(getLocalSecurityDomain());
+                                // Audit Stuff
+                                this.securityContext = SecurityContextFactory.createSecurityContext(this.jaasSecurityManager
+                                        .getSecurityDomain());
 
-                                    Map map = new HashMap();
-                                    map.put(AUDIT_MESSAGE, "login success");
-                                    putPrincipal(map, principal);
-                                    this.securityContext.getAuditManager().audit(new AuditEvent(AuditLevel.SUCCESS, map));
+                                Map map = new HashMap();
+                                map.put(AUDIT_MESSAGE, "login success");
+                                map.put("principal", this.jaasSecurityManager.getPrincipal(principal));
+                                this.securityContext.getAuditManager().audit(new AuditEvent(AuditLevel.SUCCESS, map));
 
-                                    this.txMessage = " ";
-                                    chan.send(messageFactory.createMessage(txMessage));
-                                }
+                                this.txMessage = " ";
+                                chan.send(messageFactory.createMessage(txMessage));
                             }
-
                         } else {
                             String[] options = rxMessage.split(" ");
                             ShellExecutor shellExecutor = null;
@@ -280,7 +257,7 @@ public abstract class ShellServer extends Task implements ShellServerMBean {
                                     Map map = new HashMap();
                                     map.put(AUDIT_COMMAND, rxMessage);
                                     map.put(AUDIT_COMMAND_RESPONSE, "Invalid command");
-                                    putPrincipal(map, principal);
+                                    map.put("principal", this.jaasSecurityManager.getPrincipal(principal));
                                     this.securityContext.getAuditManager().audit(new AuditEvent(AuditLevel.INFO, map));
                                 }
 
@@ -292,7 +269,7 @@ public abstract class ShellServer extends Task implements ShellServerMBean {
                                     Map map = new HashMap();
                                     map.put(AUDIT_COMMAND, rxMessage);
                                     map.put(AUDIT_COMMAND_RESPONSE, this.txMessage);
-                                    putPrincipal(map, principal);
+                                    map.put("principal", this.jaasSecurityManager.getPrincipal(principal));
                                     this.securityContext.getAuditManager().audit(new AuditEvent(AuditLevel.INFO, map));
                                 }
 

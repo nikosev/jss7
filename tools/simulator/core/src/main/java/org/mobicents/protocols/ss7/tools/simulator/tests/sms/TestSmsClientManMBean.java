@@ -99,10 +99,6 @@ public interface TestSmsClientManMBean {
 
     void setNationalLanguageCode(int val);
 
-    boolean isStatusReportRequest();
-
-    void setStatusReportRequest(boolean val);
-
     TypeOfNumberType getTypeOfNumber();
 
     String getTypeOfNumber_Value();
